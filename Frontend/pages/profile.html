@@ -1,21 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <title>My Profile</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="My Profile — View and manage your account information and change your password on the College Event Attendance Tracker.">
+  <title>My Profile — College Event Attendance Tracker</title>
+  <!-- Fix #22: Emoji favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="../public/css/components.css">
   <link rel="stylesheet" href="../public/css/profile.css">
+  <link rel="stylesheet" href="../public/css/responsive.css">
 </head>
 
 <body class="page-enter">
 
   <div class="topbar">
-    <div class="logo">Event Attendance Tracker</div>
+    <!-- Fix #19: aria-hidden on decorative emoji -->
+    <div class="logo"><span aria-hidden="true">🎓</span> Event Attendance Tracker</div>
+
+    <!-- Desktop navigation -->
     <div class="top-actions">
       <span class="role-badge" id="topbarRole">Student</span>
       <a href="#" id="backLink" class="nav-link">← Back</a>
       <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
+
+    <!-- Hamburger button (mobile only) -->
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation" aria-expanded="false">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+
+    <!-- Mobile navigation panel -->
+    <nav class="mobile-nav" aria-label="Mobile navigation">
+      <span class="role-badge" id="topbarRoleMobile">Student</span>
+      <div class="mobile-nav-sep"></div>
+      <a href="#" id="backLinkMobile" class="nav-link">← Back to Dashboard</a>
+      <div class="mobile-nav-sep"></div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </nav>
   </div>
 
 
@@ -96,18 +123,23 @@
         <label>New Password <span class="required">*</span></label>
 
         <div class="pwd-popover-wrap">
-          <input
-            type="password"
-            id="newPassword"
-            placeholder="Create a strong password"
-            autocomplete="new-password"
-            oninput="validateNewPassword(this.value)"
-            onfocus="showProfilePop()"
-            onblur="hideProfilePop()"
-          >
-          <button type="button" class="eye-toggle-profile" id="profileEyeBtn" onclick="toggleProfileEye()">&#128065;</button>
 
-          <!-- FLOATING POPOVER -->
+          <!-- pwd-input-row: ONLY input + eye toggle — eye always stays here -->
+          <div class="pwd-input-row">
+            <input
+              type="password"
+              id="newPassword"
+              placeholder="Create a strong password"
+              autocomplete="new-password"
+              oninput="validateNewPassword(this.value)"
+              onfocus="showProfilePop()"
+              onblur="hideProfilePop()"
+            >
+            <button type="button" class="eye-toggle-profile" id="profileEyeBtn"
+                    onclick="toggleProfileEye()" aria-label="Show/hide password">&#128065;</button>
+          </div>
+
+          <!-- FLOATING POPOVER — sibling below pwd-input-row, NOT inside it -->
           <div class="pwd-popover" id="profilePop">
             <div class="pop-title">Password requirements</div>
             <div class="prog-list">
@@ -168,9 +200,11 @@
   </div>
 
 
-  <div id="toast" class="toast"></div>
+  <!-- Fix #8/#10: Toast BEFORE scripts + aria-live -->
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <script src="../public/js/profile.js"></script>
+  <script src="../public/js/mobile-menu.js"></script>
 
 </body>
 

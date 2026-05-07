@@ -1,205 +1,306 @@
+/* ══════════════════════════════════════════════════
+   LOGIN.css — Sign In page
+   Mobile-first · Fluid typography · No fixed widths
+   ══════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* Fix #16: box-sizing handled globally by responsive.css */
+/* Fix #20: Page fade-in animation */
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Body ──────────────────────────────────────── */
+/* min-height instead of height — prevents collapse when mobile keyboard opens */
 body {
-    font-family: "Poppins", sans-serif;
-    background: linear-gradient(120deg, #dbeafe 50%, #ffffff 50%);
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0;
+  font-family: "Poppins", sans-serif;
+  /* Fix #14: Richer gradient matching register page — unified auth experience */
+  background: linear-gradient(145deg, #a1c4fd 0%, #c2e9fb 60%, #e0f4ff 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 4vw, 32px);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  /* Fix #20: Page fade-in */
+  animation: pageEnter 0.3s ease both;
 }
 
+/* ── Card Container ────────────────────────────── */
+/* min() prevents overflow on phones narrower than 420px */
 .container {
-    /* background: rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(10px);
-    padding: 50px;
-    width: 400px;
-    border-radius: 18px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); */
-    width: 420px;
-    background: #ffffff;
-    border-radius: 24px;
-    padding: 45px;
-    box-shadow:
-        0 10px 40px rgba(15, 23, 42, 0.08),
-        0 2px 10px rgba(15, 23, 42, 0.04);
-
-    border: 1px solid rgba(226, 232, 240, 0.8);
+  width: min(420px, 100%);
+  background: #ffffff;
+  border-radius: clamp(16px, 3vw, 24px);
+  padding: clamp(28px, 6vw, 45px);
+  box-shadow:
+    0 10px 40px rgba(15, 23, 42, 0.08),
+    0 2px 10px rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
-/* body {
-    font-family: "Poppins", sans-serif;
-    background: linear-gradient(to right, #e0f2fe 50%, #ffffff 50%);
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0;
-}
-
-.container {
-    background: white;
-    padding: 50px;
-    width: 400px;
-    border-radius: 20px;
-    box-shadow: 0 30px 70px rgba(0, 90, 200, 0.15);
-} */
-
-/* Heading */
+/* ── Heading ───────────────────────────────────── */
 .heading {
-    /* text-align: center;
-    color: #2d3456;
-    font-size: 32px;
-    font-weight: 800;
-    margin-bottom: 10px; */
-    font-size: 30px;
-    font-weight: 700;
-    color: #0f172a;
-    margin-bottom: 10px;
-    text-align: center;
+  font-size: clamp(1.5rem, 5vw, 1.9rem);
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 6px;
+  text-align: center;
+  letter-spacing: -0.02em;
 }
 
+/* ── Subtitle ──────────────────────────────────── */
 .subtitle {
-    /* text-align: center;
-    font-size: 15px;
-    color: #0d0e10;
-    margin-top: 0;
-    margin-bottom: 25px; */
-    text-align: center;
-    color: #64748b;
-    font-size: 14px;
-    margin-bottom: 30px;
+  text-align: center;
+  color: #64748b;
+  font-size: clamp(0.8rem, 2vw, 0.875rem);
+  margin-bottom: clamp(20px, 4vw, 30px);
 }
 
-/* Form */
+/* ── Form ──────────────────────────────────────── */
 .form {
-    width: 100%;
+  width: 100%;
 }
 
-/* Input Wrapper */
+/* ── Input Wrapper ─────────────────────────────── */
 .input-field {
-    margin-bottom: 15px;
+  margin-bottom: clamp(12px, 2.5vw, 16px);
 }
 
-/* Label */
+/* ── Label ─────────────────────────────────────── */
 .input-field label {
-    display: block;
-    font-size: 14px;
-    margin-top: 15px;
-    margin-bottom: 6px;
-    color: #34495e;
+  display: block;
+  font-size: clamp(0.78rem, 1.8vw, 0.85rem);
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #334155;
+  letter-spacing: 0.01em;
 }
 
-.input-field input{
-    width:100%;
-    height:52px;
-    border-radius:14px;
-    border:1px solid #dbe2ea;
-    background:#f8fafc;
-    padding:0 16px;
-    font-size:15px;
-    transition:0.3s;
-    box-shadow:none;
+/* ── Text / Email / Password Inputs ─────────────── */
+.input-field input {
+  width: 100%;
+  height: clamp(46px, 6vw, 52px);
+  border-radius: 12px;
+  border: 1.5px solid #dbe2ea;
+  background: #f8fafc;
+  padding: 0 clamp(12px, 2vw, 16px);
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
+  font-family: "Poppins", sans-serif;
+  color: #0f172a;
+  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+  outline: none;
+  /* min touch target height already covered by clamp */
 }
 
-.input-field input:focus{
-    border-color:#2563eb;
-    background:#ffffff;
-    box-shadow:0 0 0 4px rgba(37,99,235,0.12);
+.input-field input:focus {
+  border-color: #2563eb;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
-/* Inputs & Select */
-/* .input-field input, */
+.input-field input::placeholder {
+  color: #94a3b8;
+}
+
+/* ── Select ────────────────────────────────────── */
 .input-field select {
-    width: 100%;
-    padding: 12px 14px;
-    border: none;
-    border-radius: 10px;
-    font-size: 15px;
-    font-family: "Poppins", sans-serif;
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    outline: none;
-    transition: all 0.3s ease;
-    height: 45px;
-    box-sizing: border-box;
+  width: 100%;
+  height: clamp(44px, 6vw, 52px);
+  padding: 0 clamp(12px, 2vw, 16px);
+  border: 1.5px solid #dbe2ea;
+  border-radius: 12px;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
+  font-family: "Poppins", sans-serif;
+  background: #f8fafc;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.25s, box-shadow 0.25s;
+  cursor: pointer;
+  box-sizing: border-box;
 }
 
-/* Focus Effect */
-/* .input-field input:focus, */
 .input-field select:focus {
-    box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.25);
+  border-color: #2563eb;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
-/* Button */
+/* ── Sign In Button ────────────────────────────── */
+.btn-container {
+  margin-top: clamp(16px, 3vw, 20px);
+}
+
 .btn {
-    width: 100%;
-    padding: 14px;
-    font-size: 16px;
-    border: none;
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    color: white;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    /* width:100%;
-    height:52px;
-    border:none;
-    border-radius:14px;
-    background:#2563eb;
-    color:white;
-    font-size:15px;
-    font-weight:600;
-    transition:0.3s; */
+  width: 100%;
+  min-height: 48px;
+  padding: clamp(12px, 2.5vw, 14px) 20px;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  border: none;
+  /* Design System: Unified gradient matches components.css (#7c3aed → #2563eb) */
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  color: white;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s;
+  touch-action: manipulation;
 }
 
-/* Hover */
 .btn:hover {
-    transform: translateY(-3px);
-    background: linear-gradient(135deg, #2575fc, #6a11cb);
-    box-shadow: 0 8px 20px rgba(58, 123, 213, 0.4);
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #6d28d9, #1d4ed8);
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
 }
 
-/* Bottom Link */
-.create-link {
-    text-align: center;
-    margin-top: 15px;
-    font-size: 14px;
+.btn:active {
+  transform: translateY(0);
 }
 
-.create-link a {
-    color: #2575fc;
-    text-decoration: none;
-    font-weight: 600;
+
+/* Fix #3: Eye toggle for login password field */
+.pwd-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.create-link a:hover {
-    text-decoration: underline;
+.pwd-wrap input {
+  flex: 1;
+  padding-right: 46px;
 }
 
-/* Forgot Password Link */
+.eye-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 15px;
+  padding: 6px;
+  line-height: 1;
+  transition: color 0.2s;
+  touch-action: manipulation;
+  min-width: 32px;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.eye-toggle:hover { color: #475569; }
+
+/* Fix #2: Inline auth error/success messages — replaces alert() */
+.auth-msg {
+  display: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: clamp(0.78rem, 1.8vw, 0.84rem);
+  font-weight: 500;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 12px;
+  animation: pageEnter 0.25s ease both;
+}
+
+.auth-msg-error {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+.auth-msg-success {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+
+/* ── Forgot Password ───────────────────────────── */
 .forgot-password-container {
-    text-align: center;
-    margin-top: 16px;
-    margin-bottom: 12px;
+  text-align: center;
+  margin-top: clamp(14px, 2.5vw, 18px);
+  margin-bottom: 10px;
 }
 
 .forgot-password-link {
-    font-size: 14px;
-    color: #2575fc;
-    text-decoration: none;
-    font-weight: 600;
-    padding: 10px 20px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    display: inline-block;
-    border: 1px solid rgba(37, 117, 252, 0.2);
-    background: rgba(37, 117, 252, 0.05);
+  font-size: clamp(0.78rem, 1.8vw, 0.875rem);
+  color: #2575fc;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+  display: inline-block;
+  border: 1px solid rgba(37, 117, 252, 0.2);
+  background: rgba(37, 117, 252, 0.05);
+  touch-action: manipulation;
 }
 
 .forgot-password-link:hover {
-    background: rgba(37, 117, 252, 0.15);
-    text-decoration: none;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(37, 117, 252, 0.25);
-    border-color: rgba(37, 117, 252, 0.4);
+  background: rgba(37, 117, 252, 0.12);
+  border-color: rgba(37, 117, 252, 0.35);
+  transform: translateY(-1px);
+}
+
+/* ── Create Account Link ───────────────────────── */
+.create-link {
+  text-align: center;
+  margin-top: clamp(12px, 2vw, 16px);
+  font-size: clamp(0.78rem, 1.8vw, 0.875rem);
+  color: #64748b;
+}
+
+.create-link a {
+  color: #2575fc;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.create-link a:hover {
+  text-decoration: underline;
+}
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE OVERRIDES
+   ══════════════════════════════════════════════════ */
+
+/* ── 375px — iPhone SE ─────────────────────────── */
+@media (max-width: 375px) {
+  body {
+    padding: 12px;
+    align-items: flex-start;
+    padding-top: clamp(20px, 8vh, 48px);
+  }
+  .container {
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
+}
+
+/* ── 320px — smallest phones ───────────────────── */
+@media (max-width: 320px) {
+  body {
+    padding: 10px;
+  }
+  .container {
+    padding: 20px 16px;
+    border-radius: 12px;
+  }
+  .heading {
+    font-size: 1.3rem;
+  }
+}
+
+/* ── Large screens ─────────────────────────────── */
+@media (min-width: 768px) {
+  body {
+    background: linear-gradient(145deg, #dbeafe 0%, #eff6ff 40%, #ffffff 100%);
+  }
 }

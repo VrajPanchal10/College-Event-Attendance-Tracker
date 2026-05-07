@@ -1,169 +1,80 @@
-<!-- <!DOCTYPE html>
-<html>
-
-<head>
-  <title>Student Dashboard</title>
-  <link rel="stylesheet" href="../public/css/components.css">
-  <link rel="stylesheet" href="../public/css/student-dashboard.css">
-
-</head>
-
-<body class="page-enter">
-
-  <div class="topbar">
-
-    <div class="logo">Event Attendance Tracker</div>
-
-    <div class="top-actions">
-      <span class="role-badge">Student</span>
-      <a href="profile.html" class="nav-link" id="profileLink">Profile</a>
-      <a href="attendance.html" class="attendance-link">My Attendance</a>
-      <button class="logout-btn" onclick="logout()">Logout</button>
-    </div>
-
-  </div>
-
-
-  <div id="loader" class="loader"></div>
-
-
-  <h2>Student Dashboard</h2>
-
-
-  <div class="stats-container">
-
-    <div class="stat-card">
-      <h3 id="upcomingCount">0</h3>
-      <p>Upcoming Events</p>
-    </div>
-
-    <div class="stat-card">
-      <h3 id="totalEvents">0</h3>
-      <p>Total Events</p>
-    </div>
-
-    <div class="stat-card">
-      <h3 id="registeredCount">0</h3>
-      <p>Registered</p>
-    </div>
-
-    <div class="stat-card">
-      <h3 id="attendanceCount">0</h3>
-      <p>Attended</p>
-    </div>
-
-    <div class="stat-card">
-      <h3 id="attendancePercent">0%</h3>
-      <p>Attendance %</p>
-    </div>
-
-    <div class="stat-card">
-      <h3 id="missedCount">0</h3>
-      <p>Missed Events</p>
-    </div>
-
-  </div>
-
-
-  <div class="search-container">
-    <input type="text" id="searchInput" placeholder="Search events by title..." oninput="handleSearch()">
-  </div>
-
-
-  <div class="filter-container">
-
-    <button class="filter-btn active" onclick="filterEvents('All')">All</button>
-
-    <button class="filter-btn" onclick="filterEvents('Tech')">Tech</button>
-
-    <button class="filter-btn" onclick="filterEvents('Non-Tech')">Non-Tech</button>
-
-    <button class="filter-btn" onclick="filterEvents('Yugantar')">Yugantar</button>
-
-    <button class="filter-btn" onclick="filterEvents('Gyanotsav')">Gyanotsav</button>
-
-    <button class="filter-btn" onclick="filterEvents('Sports')">Sports</button>
-
-  </div>
-
-
-  <div id="eventList"></div>
-
-
-  <script src="../public/js/dashboard.js"></script>
-
-  <div id="toast" class="toast"></div>
-
-</body>
-
-</html> -->
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <title>Student Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Student Dashboard — View upcoming events, track registrations, and monitor your attendance on the College Event Attendance Tracker.">
+  <title>Student Dashboard — College Event Attendance Tracker</title>
+  <!-- Fix #22: Emoji favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="../public/css/components.css">
   <link rel="stylesheet" href="../public/css/student-dashboard.css">
+  <link rel="stylesheet" href="../public/css/responsive.css">
 </head>
 
 <body class="page-enter">
 
+  <!-- Fix #8: aria-live on toast BEFORE scripts (Fix #10) -->
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- TOPBAR -->
   <div class="topbar">
-    <div class="logo">College Event Attendance Tracker</div>
+    <!-- Fix #19: aria-hidden on decorative emoji -->
+    <div class="logo"><span aria-hidden="true">🎓</span> Event Attendance Tracker</div>
+
+    <!-- Fix #18: Welcome greeting shows after JS sets it -->
+    <span id="welcomeGreet" class="welcome-greet" aria-label="Welcome message"></span>
+
+    <!-- Desktop navigation -->
     <div class="top-actions">
       <span class="role-badge">Student</span>
-      <a href="calendar.html" class="nav-link">📅 Calendar</a>
+      <a href="calendar.html" class="nav-link"><span aria-hidden="true">📅</span> Calendar</a>
       <a href="profile.html" class="nav-link" id="profileLink">Profile</a>
       <a href="attendance.html" class="attendance-link">My Attendance</a>
       <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
+
+    <!-- Hamburger button (mobile only) -->
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation" aria-expanded="false">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+
+    <!-- Mobile navigation panel -->
+    <nav class="mobile-nav" aria-label="Mobile navigation">
+      <span class="role-badge">Student</span>
+      <div class="mobile-nav-sep"></div>
+      <!-- Fix #19: aria-hidden on decorative emoji in nav -->
+      <a href="calendar.html" class="nav-link"><span aria-hidden="true">📅</span> Calendar</a>
+      <a href="profile.html" class="nav-link" id="profileLinkMobile">Profile</a>
+      <a href="attendance.html" class="attendance-link nav-link">My Attendance</a>
+      <div class="mobile-nav-sep"></div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </nav>
   </div>
 
 
   <div id="loader" class="loader"></div>
 
+  <!-- Fix #5: Scoped .page-title instead of bare h2 -->
+  <h2 class="page-title">Student Dashboard</h2>
 
-  <h2>Student Dashboard</h2>
-
-
-  <div class="stats-container">
-
-    <div class="stat-card">
-      <h3 id="upcomingCount">0</h3>
-      <p>Upcoming Events</p>
-    </div>
-
-    <div class="stat-card">
-      <h3 id="totalEvents">0</h3>
-      <p>Total Events</p>
-    </div>
-
-    <div class="stat-card">
-      <h3 id="registeredCount">0</h3>
-      <p>Registered</p>
-    </div>
-
-    <div class="stat-card">
-      <h3 id="attendanceCount">0</h3>
-      <p>Attended</p>
-    </div>
-
-    <div class="stat-card">
-      <h3 id="attendancePercent">0%</h3>
-      <p>Attendance %</p>
-    </div>
-
-    <div class="stat-card">
-      <h3 id="missedCount">0</h3>
-      <p>Missed Events</p>
-    </div>
-
-  </div>
+  <div class="stats-container"></div>
 
 
+  <!-- Fix #17: Added <label> + sr-only for search -->
+  <!-- Fix #13: Added search icon + clear button -->
   <div class="search-container">
-    <input type="text" id="searchInput" placeholder="Search events by title..." oninput="handleSearch()">
+    <label for="searchInput" class="sr-only">Search events by title</label>
+    <div class="search-wrap">
+      <span class="search-icon" aria-hidden="true">🔍</span>
+      <input type="search" id="searchInput" placeholder="Search events by title..." oninput="handleSearch()">
+      <button type="button" class="search-clear" id="clearSearch" onclick="clearSearch()" aria-label="Clear search" style="display:none">✕</button>
+    </div>
   </div>
 
 
@@ -181,13 +92,14 @@
 
 
   <!-- UNREGISTER CONFIRM MODAL -->
-  <div class="modal-overlay" id="unregisterOverlay">
+  <!-- Fix #7: aria-modal + role="dialog" for keyboard accessibility -->
+  <div class="modal-overlay" id="unregisterOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-box">
 
       <div class="modal-icon-strip">
-        <div class="modal-icon-wrap warning">↩</div>
+        <div class="modal-icon-wrap warning" aria-hidden="true">↩</div>
         <div class="modal-titles">
-          <h3>Cancel Registration?</h3>
+          <h3 id="modalTitle">Cancel Registration?</h3>
           <p>This action cannot be undone</p>
         </div>
       </div>
@@ -205,8 +117,7 @@
 
 
   <script src="../public/js/dashboard.js"></script>
-
-  <div id="toast" class="toast"></div>
+  <script src="../public/js/mobile-menu.js"></script>
 
 </body>
 

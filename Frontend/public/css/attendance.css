@@ -1,23 +1,25 @@
 /* ══════════════════════════════════════════════════
    attendance.css
    Only for attendance.html
-   Load AFTER components.css
+   Load AFTER components.css → BEFORE responsive.css
+   KEY FIX: Table is now horizontally scrollable
+   instead of hiding columns on small screens
    ══════════════════════════════════════════════════ */
 
 /* ══════════════════════════════════════════════════
    PAGE WRAPPER
    ══════════════════════════════════════════════════ */
 .attendance-wrapper {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 32px 40px 60px;
+  padding: clamp(20px, 4vw, 32px) clamp(16px, 5vw, 40px) clamp(40px, 8vw, 60px);
 }
 
 /* ══════════════════════════════════════════════════
    PAGE TITLE
    ══════════════════════════════════════════════════ */
 h2 {
-  font-size: 1.45rem;
+  font-size: clamp(1.1rem, 3vw, 1.45rem);
   font-weight: 700;
   color: #1e293b;
   margin-bottom: 0;
@@ -27,7 +29,7 @@ h2 {
 h2::after {
   content: '';
   display: block;
-  width: 42px;
+  width: clamp(32px, 4vw, 42px);
   height: 3px;
   background: linear-gradient(135deg, #7c3aed, #2563eb);
   border-radius: 2px;
@@ -39,20 +41,28 @@ h2::after {
    ══════════════════════════════════════════════════ */
 .attendance-stats {
   display: flex;
-  gap: 16px;
-  margin: 24px 0;
+  gap: clamp(10px, 2vw, 16px);
+  margin: clamp(16px, 3vw, 24px) 0;
+  flex-wrap: wrap;
 }
 
 .stat-card {
-  min-width: 180px;
+  flex: 1;
+  min-width: clamp(140px, 20vw, 180px);
   background: #ffffff;
   border-radius: 14px;
-  padding: 22px 20px;
+  padding: clamp(16px, 2.5vw, 22px) clamp(14px, 2vw, 20px);
   text-align: center;
   border: 1px solid #e2e8f0;
   box-shadow: 0 2px 10px rgba(30, 41, 59, 0.07);
   position: relative;
   overflow: hidden;
+  transition: transform 0.22s, box-shadow 0.22s;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12);
 }
 
 .stat-card::before {
@@ -64,7 +74,7 @@ h2::after {
 }
 
 .stat-card h3 {
-  font-size: 1.85rem;
+  font-size: clamp(1.5rem, 4vw, 1.85rem);
   font-weight: 700;
   color: #2563eb;
   margin-bottom: 5px;
@@ -72,7 +82,7 @@ h2::after {
 }
 
 .stat-card p {
-  font-size: 0.75rem;
+  font-size: clamp(0.68rem, 1.5vw, 0.75rem);
   color: #64748b;
   font-weight: 500;
   text-transform: uppercase;
@@ -90,11 +100,36 @@ h2::after {
   overflow: hidden;
 }
 
+/* ── Scroll wrapper ──────────────────────────────
+   KEY FIX: Instead of hiding table columns on mobile,
+   the table now scrolls horizontally. This preserves
+   all data and lets the user swipe to see everything.
+   ─────────────────────────────────────────────────── */
+.table-scroll-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Subtle scroll indicator shadow */
+.table-scroll-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 24px;
+  background: linear-gradient(to left, rgba(255,255,255,0.8), transparent);
+  pointer-events: none;
+  border-radius: 0 16px 16px 0;
+}
+
 /* ══════════════════════════════════════════════════
    TABLE
    ══════════════════════════════════════════════════ */
 .attendance-table {
   width: 100%;
+  min-width: 520px; /* Ensures table never collapses below readable width */
   border-collapse: collapse;
 }
 
@@ -105,34 +140,45 @@ h2::after {
 }
 
 .attendance-table th {
-  padding: 14px 20px;
-  font-size: 0.78rem;
+  padding: clamp(10px, 2vw, 14px) clamp(12px, 2vw, 20px);
+  font-size: clamp(0.68rem, 1.5vw, 0.78rem);
   font-weight: 600;
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   text-align: left;
+  white-space: nowrap;
 }
 
 /* ── Rows ── */
 .attendance-table tbody tr {
   border-bottom: 1px solid #f1f5f9;
   transition: background 0.15s ease;
+  /* Colored left border = instant status indicator
+     visible without scrolling on ANY screen size */
+  border-left: 4px solid transparent;
 }
 
-.attendance-table tbody tr:last-child {
-  border-bottom: none;
+/* JS should set data-status="present" / data-status="absent" on <tr> */
+.attendance-table tbody tr[data-status="present"] {
+  border-left-color: #16a34a;
+  background: rgba(22, 163, 74, 0.03);
 }
 
-.attendance-table tbody tr:hover {
-  background: #f8fafc;
+.attendance-table tbody tr[data-status="absent"] {
+  border-left-color: #dc2626;
+  background: rgba(220, 38, 38, 0.03);
 }
+
+.attendance-table tbody tr:last-child { border-bottom: none; }
+.attendance-table tbody tr:hover { background: #f8fafc; }
 
 .attendance-table td {
-  padding: 14px 20px;
-  font-size: 0.85rem;
+  padding: clamp(10px, 2vw, 14px) clamp(12px, 2vw, 20px);
+  font-size: clamp(0.78rem, 1.8vw, 0.85rem);
   color: #334155;
   line-height: 1.5;
+  word-break: break-word;
 }
 
 /* Row number column */
@@ -140,6 +186,7 @@ h2::after {
   color: #94a3b8;
   font-weight: 500;
   width: 48px;
+  white-space: nowrap;
 }
 
 /* Event title column */
@@ -148,13 +195,14 @@ h2::after {
   color: #1e293b;
 }
 
-/* ── Category chip in table ── */
+/* ── Category chips ── */
 .table-chip {
   display: inline-block;
   padding: 3px 10px;
   border-radius: 20px;
   font-size: 0.72rem;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .chip-tech    { background: #dbeafe; color: #1d4ed8; }
@@ -163,7 +211,7 @@ h2::after {
 .chip-other   { background: #fef9c3; color: #854d0e; }
 .chip-cultural{ background: #ede9fe; color: #5b21b6; }
 
-/* ── Present badge in table ── */
+/* ── Status badges ── */
 .badge-present {
   display: inline-block;
   padding: 4px 12px;
@@ -172,6 +220,7 @@ h2::after {
   font-weight: 600;
   background: #dcfce7;
   color: #166534;
+  white-space: nowrap;
 }
 
 .badge-absent {
@@ -182,18 +231,19 @@ h2::after {
   font-weight: 600;
   background: #fee2e2;
   color: #991b1b;
+  white-space: nowrap;
 }
 
 /* ══════════════════════════════════════════════════
    EMPTY STATE
    ══════════════════════════════════════════════════ */
 .empty-state {
-  padding: 60px 20px;
+  padding: clamp(40px, 8vw, 60px) 20px;
   text-align: center;
 }
 
 .empty-state p {
-  font-size: 0.95rem;
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
   color: #94a3b8;
   font-weight: 500;
 }
@@ -201,25 +251,69 @@ h2::after {
 /* ══════════════════════════════════════════════════
    RESPONSIVE
    ══════════════════════════════════════════════════ */
-@media (max-width: 768px) {
+
+/* ── 1440px — large desktop ─── */
+@media (min-width: 1440px) {
   .attendance-wrapper {
-    padding: 24px 20px 40px;
-  }
-  .attendance-table th,
-  .attendance-table td {
-    padding: 12px 14px;
-  }
-  /* Hide Date Attended on mobile */
-  .attendance-table th:nth-child(4),
-  .attendance-table td:nth-child(4) {
-    display: none;
+    padding: 36px clamp(40px, 5vw, 80px) 60px;
   }
 }
 
-@media (max-width: 480px) {
-  /* Also hide Category on very small screens */
-  .attendance-table th:nth-child(3),
-  .attendance-table td:nth-child(3) {
-    display: none;
+/* ── 768px — tablet ─── */
+@media (max-width: 768px) {
+  .attendance-wrapper {
+    padding: 20px 16px 40px;
+  }
+}
+
+/* ── 425px — medium phone ─── */
+@media (max-width: 425px) {
+  .attendance-wrapper {
+    padding: 16px 12px 32px;
+  }
+  .stat-card {
+    flex: 1 1 100%;
+  }
+}
+
+/* ── 375px — iPhone SE ─── */
+@media (max-width: 375px) {
+  .attendance-wrapper {
+    padding: 14px 10px 28px;
+  }
+}
+
+/* Scroll hint on mobile — more visible with gradient + icon */
+@media (max-width: 600px) {
+  .attendance-table-container::before {
+    content: '\2190 Swipe to see all columns \2192';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #2563eb;
+    background: #eff6ff;
+    text-align: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid #bfdbfe;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 0.02em;
+  }
+
+  /* First two columns always visible — make them fixed widths */
+  .attendance-table th:nth-child(1),
+  .attendance-table td:nth-child(1) {
+    width: 36px;
+    min-width: 36px;
+  }
+
+  /* Make status column (last) use badge that wraps cleanly */
+  .badge-present,
+  .badge-absent {
+    font-size: 0.68rem;
+    padding: 3px 8px;
+    white-space: nowrap;
   }
 }

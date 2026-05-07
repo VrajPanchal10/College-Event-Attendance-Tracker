@@ -1,23 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <title>Analytics</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Analytics Overview — Track event performance, registrations and attendance across all college events.">
+  <title>Analytics — College Event Attendance Tracker</title>
+  <!-- Fix #22: Emoji favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="../public/css/components.css">
   <link rel="stylesheet" href="../public/css/analytics.css">
+  <link rel="stylesheet" href="../public/css/responsive.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 
 <body class="page-enter">
 
+  <!-- TOPBAR -->
   <div class="topbar">
-    <div class="logo">Event Attendance Tracker</div>
+    <!-- Fix #19: aria-hidden on decorative emoji -->
+    <div class="logo"><span aria-hidden="true">🎓</span> Event Attendance Tracker</div>
+
+    <!-- Desktop navigation -->
     <div class="top-actions">
       <a href="faculty-dashboard.html" class="nav-link">Dashboard</a>
       <span class="nav-link active">Analytics</span>
       <span class="role-badge">Faculty</span>
       <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
+
+    <!-- Hamburger button (mobile only) -->
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation" aria-expanded="false">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+
+    <!-- Mobile navigation panel -->
+    <nav class="mobile-nav" aria-label="Mobile navigation">
+      <a href="faculty-dashboard.html" class="nav-link">Dashboard</a>
+      <span class="nav-link active">Analytics</span>
+      <div class="mobile-nav-sep"></div>
+      <span class="role-badge">Faculty</span>
+      <div class="mobile-nav-sep"></div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </nav>
   </div>
 
 
@@ -69,7 +98,10 @@
           </div>
           <span class="chart-badge">Bar Chart</span>
         </div>
-        <canvas id="barChart" height="90"></canvas>
+        <!-- max-width:100% prevents chart overflow on mobile -->
+        <div class="chart-canvas-wrap">
+          <canvas id="barChart" height="90" style="max-width:100%;"></canvas>
+        </div>
       </div>
 
       <!-- Doughnut Chart -->
@@ -82,7 +114,7 @@
           <span class="chart-badge">Doughnut</span>
         </div>
         <div style="max-width:280px;margin:0 auto;">
-          <canvas id="doughnutChart"></canvas>
+          <canvas id="doughnutChart" style="max-width:100%;"></canvas>
         </div>
       </div>
 
@@ -95,7 +127,7 @@
           </div>
           <span class="chart-badge">Ranking</span>
         </div>
-        <canvas id="horizontalBar" height="220"></canvas>
+        <canvas id="horizontalBar" height="220" style="max-width:100%;"></canvas>
       </div>
 
     </div>
@@ -104,9 +136,12 @@
 
 
   <div id="loader" class="loader"></div>
-  <div id="toast" class="toast"></div>
+
+  <!-- Fix #8/#10: Toast BEFORE scripts + aria-live -->
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <script src="../public/js/analytics.js"></script>
+  <script src="../public/js/mobile-menu.js"></script>
 
 </body>
 

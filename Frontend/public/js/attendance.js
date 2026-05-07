@@ -6,8 +6,8 @@ const role    = localStorage.getItem("role");
 // AUTH CHECK
 // ===============================
 if (!token || role !== "student") {
-  alert("Unauthorized access");
-  window.location.href = "login.html";
+  // Fix #2: Silent redirect — no alert()
+  window.location.replace("login.html");
 }
 
 
@@ -119,6 +119,8 @@ async function loadAttendance() {
         : `<span class="badge-absent">✘ Absent</span>`;
 
       const tr = document.createElement("tr");
+      // Set data-status for CSS colored left-border indicator
+      tr.dataset.status = isPresent ? "present" : "absent";
       tr.innerHTML = `
         <td>${rowIndex++}</td>
         <td>${event.title || "—"}</td>
@@ -174,6 +176,7 @@ function showTableSkeleton() {
   const container = document.querySelector(".attendance-table-container");
   if (!container) return;
   container.innerHTML = `
+    <div class="table-scroll-wrap">
     <div class="sk-thead">
       <div class="skeleton sk-th" style="width:30px"></div>
       <div class="skeleton sk-th" style="width:180px"></div>
@@ -190,6 +193,7 @@ function showTableSkeleton() {
         <div class="skeleton sk-td" style="width:60px"></div>
       </div>
     `).join("")}
+    </div>
   `;
 }
 
@@ -197,18 +201,20 @@ function removeTableSkeleton() {
   const container = document.querySelector(".attendance-table-container");
   if (!container) return;
   container.innerHTML = `
-    <table class="attendance-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Event Title</th>
-          <th>Category</th>
-          <th>Date Attended</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="attendanceBody"></tbody>
-    </table>
+    <div class="table-scroll-wrap">
+      <table class="attendance-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Event Title</th>
+            <th>Category</th>
+            <th>Date Attended</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="attendanceBody"></tbody>
+      </table>
+    </div>
     <div id="emptyState" class="empty-state" style="display:none;">
       <p>No attendance records found.</p>
     </div>

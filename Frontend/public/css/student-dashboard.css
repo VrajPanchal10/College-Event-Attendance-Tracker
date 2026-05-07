@@ -1,45 +1,47 @@
 /* ══════════════════════════════════════════════════
    student-dashboard.css
    Only for student-dashboard.html
-   Load AFTER components.css
+   Load AFTER components.css → BEFORE responsive.css
    ══════════════════════════════════════════════════ */
 
 /* ══════════════════════════════════════════════════
    ATTENDANCE LINK — topbar button
    ══════════════════════════════════════════════════ */
 .attendance-link {
-  display: inline-block;
-  padding: 7px 16px;
+  display: inline-flex;
+  align-items: center;
+  padding: 7px clamp(10px, 1.5vw, 16px);
   border-radius: 20px;
   font-family: 'Poppins', sans-serif;
-  font-size: 0.82rem;
+  font-size: clamp(0.75rem, 1.6vw, 0.82rem);
   font-weight: 500;
   text-decoration: none;
   color: #ffffff;
-  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
   transition: all 0.2s ease;
+  white-space: nowrap;
+  touch-action: manipulation;
+  min-height: 36px;
 }
 
 .attendance-link:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
-/* ══════════════════════════════════════════════════
-   PAGE TITLE
-   ══════════════════════════════════════════════════ */
-h2 {
-  font-size: 1.45rem;
+/* Fix #5: Scoped .page-title instead of bare global h2 selector */
+.page-title {
+  font-size: clamp(1.1rem, 3vw, 1.45rem);
   font-weight: 700;
   color: #1e293b;
-  padding: 30px 40px 0;
+  padding: clamp(20px, 4vw, 30px) clamp(16px, 5vw, 40px) 0;
   letter-spacing: -0.02em;
 }
 
-h2::after {
+.page-title::after {
   content: '';
   display: block;
-  width: 42px;
+  width: clamp(32px, 5vw, 42px);
   height: 3px;
   background: linear-gradient(135deg, #7c3aed, #2563eb);
   border-radius: 2px;
@@ -47,21 +49,20 @@ h2::after {
 }
 
 /* ══════════════════════════════════════════════════
-   STATS
+   STATS CONTAINER
    ══════════════════════════════════════════════════ */
 .stats-container {
-  display: flex;
-  gap: 16px;
-  padding: 24px 40px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: clamp(10px, 2vw, 16px);
+  padding: clamp(16px, 3vw, 24px) clamp(16px, 5vw, 40px);
 }
 
+/* ── Stat Card ── */
 .stat-card {
-  flex: 1;
-  min-width: 130px;
   background: #ffffff;
   border-radius: 14px;
-  padding: 22px 16px;
+  padding: clamp(16px, 2.5vw, 22px) clamp(12px, 2vw, 16px);
   text-align: center;
   border: 1px solid #e2e8f0;
   box-shadow: 0 2px 10px rgba(30, 41, 59, 0.07);
@@ -84,72 +85,124 @@ h2::after {
 }
 
 .stat-card h3 {
-  font-size: 1.85rem;
+  font-size: clamp(1.5rem, 4vw, 1.85rem);
   font-weight: 700;
   color: #2563eb;
   margin-bottom: 5px;
   line-height: 1;
 }
 
+/* Fix #12: Semantic stat card colors */
+.stat-card.stat-success h3 { color: #16a34a; }
+.stat-card.stat-success::before { background: linear-gradient(135deg, #10b981, #16a34a); }
+
+.stat-card.stat-danger h3 { color: #dc2626; }
+.stat-card.stat-danger::before { background: linear-gradient(135deg, #f87171, #dc2626); }
+
+.stat-card.stat-info h3 { color: #2563eb; }
+.stat-card.stat-info::before { background: linear-gradient(135deg, #60a5fa, #2563eb); }
+
 .stat-card p {
-  font-size: 0.75rem;
+  font-size: clamp(0.68rem, 1.5vw, 0.75rem);
   color: #64748b;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
 }
 
 /* ══════════════════════════════════════════════════
    SEARCH BAR
    ══════════════════════════════════════════════════ */
 .search-container {
-  padding: 0 40px 14px;
+  padding: 0 clamp(16px, 5vw, 40px) clamp(10px, 2vw, 14px);
 }
 
-.search-container input {
+/* Fix #13: Search wrap with icon + clear button */
+.search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: clamp(12px, 2vw, 16px);
+  font-size: 15px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.search-wrap input {
   width: 100%;
-  padding: 12px 18px;
+  padding: clamp(10px, 2vw, 12px) clamp(14px, 2.5vw, 18px) clamp(10px, 2vw, 12px) 40px;
   border-radius: 10px;
   border: 1.5px solid #e2e8f0;
   background: #ffffff;
   font-family: 'Poppins', sans-serif;
-  font-size: 0.88rem;
+  font-size: clamp(0.82rem, 1.8vw, 0.88rem);
   color: #1e293b;
   outline: none;
   box-shadow: 0 2px 8px rgba(30, 41, 59, 0.05);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  min-height: 44px;
 }
 
-.search-container input::placeholder {
-  color: #94a3b8;
-}
+.search-wrap input::placeholder { color: #94a3b8; }
 
-.search-container input:focus {
+.search-wrap input:focus {
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.11);
+}
+
+/* Clear button */
+.search-clear {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 14px;
+  padding: 6px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  min-height: 28px;
+  border-radius: 50%;
+  transition: background 0.2s, color 0.2s;
+  touch-action: manipulation;
+}
+
+.search-clear:hover {
+  background: #f1f5f9;
+  color: #475569;
 }
 
 /* ══════════════════════════════════════════════════
    FILTER BUTTONS
    ══════════════════════════════════════════════════ */
 .filter-container {
-  padding: 0 40px 24px;
+  padding: 0 clamp(16px, 5vw, 40px) clamp(16px, 3vw, 24px);
   display: flex;
-  gap: 10px;
+  gap: clamp(6px, 1.5vw, 10px);
   flex-wrap: wrap;
 }
 
 .filter-btn {
-  padding: 8px 18px;
+  padding: clamp(6px, 1.2vw, 8px) clamp(12px, 2vw, 18px);
   border-radius: 20px;
   border: 1.5px solid #e2e8f0;
   background: #ffffff;
   color: #475569;
   font-family: 'Poppins', sans-serif;
-  font-size: 0.82rem;
+  font-size: clamp(0.75rem, 1.6vw, 0.82rem);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  touch-action: manipulation;
+  min-height: 36px;
 }
 
 .filter-btn:hover {
@@ -165,19 +218,36 @@ h2::after {
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);
 }
 
+/* Fix #15: Event cards use flex column — .card-actions pushes to bottom */
+/* Fix #6: .card-actions class replaces inline style="margin-top:10px" */
+.card {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-actions {
+  margin-top: auto;
+  padding-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
 /* ══════════════════════════════════════════════════
    EVENT LIST GRID
    ══════════════════════════════════════════════════ */
 #eventList {
-  padding: 0 40px 60px;
+  padding: 0 clamp(16px, 5vw, 40px) clamp(40px, 8vw, 60px);
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 22px;
+  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+  gap: clamp(14px, 2.5vw, 22px);
+  /* Fix #15: align-items stretch for uniform card heights */
+  align-items: stretch;
 }
 
 /* ══════════════════════════════════════════════════
    REMINDER BADGES
-   — Shown on event cards when event is within 48hrs
    ══════════════════════════════════════════════════ */
 .reminder-badge {
   display: inline-flex;
@@ -213,22 +283,24 @@ h2::after {
 
 /* ══════════════════════════════════════════════════
    UNREGISTER BUTTON
-   — Appears on event cards when registered but not attended
    ══════════════════════════════════════════════════ */
 .unregister-btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   margin-top: 10px;
   margin-left: 8px;
-  padding: 7px 14px;
+  padding: 7px 13px;
   border-radius: 8px;
   border: 1.5px solid #fca5a5;
   background: #fff5f5;
   color: #991b1b;
   font-family: 'Poppins', sans-serif;
-  font-size: 0.78rem;
+  font-size: clamp(0.72rem, 1.5vw, 0.78rem);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  touch-action: manipulation;
+  min-height: 36px;
 }
 
 .unregister-btn:hover {
@@ -237,36 +309,113 @@ h2::after {
   transform: translateY(-1px);
 }
 
+/* Fix #17: Screen-reader-only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Fix #18: Welcome greeting in topbar */
+.welcome-greet {
+  font-size: clamp(0.72rem, 1.5vw, 0.8rem);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
 /* ══════════════════════════════════════════════════
    RESPONSIVE
    ══════════════════════════════════════════════════ */
-@media (max-width: 900px) {
-  .stats-container { 
-    gap: 12px; 
+
+/* 1440px large desktop */
+@media (min-width: 1440px) {
+  .stats-container {
+    grid-template-columns: repeat(6, 1fr);
+    padding: 28px clamp(40px, 5vw, 80px);
   }
-  #eventList { 
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+  .page-title {
+    padding: 32px clamp(40px, 5vw, 80px) 0;
+  }
+  .search-container,
+  .filter-container,
+  #eventList {
+    padding-left: clamp(40px, 5vw, 80px);
+    padding-right: clamp(40px, 5vw, 80px);
   }
 }
 
+/* ── 1024px — laptop ─── */
+@media (max-width: 1024px) {
+  .stats-container {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+}
+
+/* ── 768px — tablet ─── */
+@media (max-width: 768px) {
+  .stats-container {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 16px;
+  }
+  #eventList {
+    grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+  }
+}
+
+/* ── 600px — small tablet / large phone ─── */
 @media (max-width: 600px) {
-  h2 { 
-    padding: 22px 20px 0; 
+  .stats-container {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 14px;
   }
-  .stats-container { 
-    padding: 18px 20px; 
+}
+
+/* ── 425px — medium phone ─── */
+@media (max-width: 425px) {
+  .stats-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
   }
-  .stat-card h3 { 
-    font-size: 1.5rem; 
+  #eventList {
+    grid-template-columns: 1fr;
   }
-  .search-container { 
-    padding: 0 20px 12px; 
+}
+
+/* ── 375px — iPhone SE ─── */
+@media (max-width: 375px) {
+  .stats-container {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 12px;
+    gap: 8px;
   }
-  .filter-container { 
-    padding: 0 20px 18px; 
+  .stat-card {
+    padding: 14px 10px;
   }
-  #eventList { 
-    padding: 0 20px 40px; 
-    grid-template-columns: 1fr; 
+}
+
+/* ── 320px — smallest phones ─── */
+@media (max-width: 320px) {
+  .stats-container {
+    grid-template-columns: 1fr 1fr;
+    padding: 10px;
+  }
+  h2 {
+    font-size: 1rem;
+    padding: 14px 12px 0;
+  }
+  .filter-btn {
+    padding: 6px 10px;
+    font-size: 0.72rem;
   }
 }

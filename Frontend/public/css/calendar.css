@@ -1,7 +1,7 @@
 /* ══════════════════════════════════════════════════
    calendar.css
    Only for calendar.html
-   Load AFTER components.css
+   Load AFTER components.css → BEFORE responsive.css
    ══════════════════════════════════════════════════ */
 
 /* ══════════════════════════════════════════════════
@@ -10,7 +10,7 @@
 .calendar-wrapper {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 32px 40px 60px;
+  padding: clamp(20px, 4vw, 32px) clamp(14px, 4vw, 40px) clamp(40px, 8vw, 60px);
 }
 
 /* ══════════════════════════════════════════════════
@@ -20,13 +20,13 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 28px;
+  margin-bottom: clamp(16px, 3vw, 28px);
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 12px;
 }
 
 .cal-page-header h2 {
-  font-size: 1.45rem;
+  font-size: clamp(1.1rem, 3vw, 1.45rem);
   font-weight: 700;
   color: #1e293b;
   letter-spacing: -0.02em;
@@ -35,7 +35,7 @@
 .cal-page-header h2::after {
   content: '';
   display: block;
-  width: 42px;
+  width: clamp(32px, 4vw, 42px);
   height: 3px;
   background: linear-gradient(135deg, #7c3aed, #2563eb);
   border-radius: 2px;
@@ -43,7 +43,7 @@
 }
 
 .cal-page-header p {
-  font-size: 0.83rem;
+  font-size: clamp(0.76rem, 1.8vw, 0.83rem);
   color: #64748b;
   margin-top: 8px;
 }
@@ -53,7 +53,7 @@
    ══════════════════════════════════════════════════ */
 .cal-legend {
   display: flex;
-  gap: 10px;
+  gap: clamp(8px, 1.5vw, 10px);
   flex-wrap: wrap;
   align-items: center;
 }
@@ -62,7 +62,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.74rem;
+  font-size: clamp(0.7rem, 1.5vw, 0.74rem);
   font-weight: 500;
   color: #475569;
 }
@@ -85,43 +85,49 @@
    ══════════════════════════════════════════════════ */
 .calendar-card {
   background: #ffffff;
-  border-radius: 20px;
+  border-radius: clamp(14px, 3vw, 20px);
   border: 1px solid #e2e8f0;
   box-shadow: 0 2px 16px rgba(30, 41, 59, 0.08);
   overflow: hidden;
 }
 
-/* ── Cal Header (month nav) ── */
+/* ── Calendar Header (month nav) ── */
 .cal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 28px;
+  padding: clamp(14px, 2.5vw, 20px) clamp(14px, 3vw, 28px);
   border-bottom: 1px solid #f1f5f9;
   background: #fafbfc;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .cal-month-title {
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 2.5vw, 1.1rem);
   font-weight: 700;
   color: #1e293b;
   letter-spacing: -0.01em;
+  flex: 1;
+  text-align: center;
 }
 
 .cal-nav-btn {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 8px;
   border: 1.5px solid #e2e8f0;
   background: #ffffff;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
   color: #475569;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
   font-family: 'Poppins', sans-serif;
+  flex-shrink: 0;
+  touch-action: manipulation;
 }
 
 .cal-nav-btn:hover {
@@ -131,16 +137,18 @@
 }
 
 .cal-today-btn {
-  padding: 7px 18px;
+  padding: 7px clamp(12px, 2vw, 18px);
   border-radius: 8px;
   border: 1.5px solid #e2e8f0;
   background: #ffffff;
   cursor: pointer;
   font-family: 'Poppins', sans-serif;
-  font-size: 0.78rem;
+  font-size: clamp(0.72rem, 1.5vw, 0.78rem);
   font-weight: 600;
   color: #475569;
   transition: all 0.2s ease;
+  touch-action: manipulation;
+  min-height: 36px;
 }
 
 .cal-today-btn:hover {
@@ -153,6 +161,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 /* ── Day of week headers ── */
@@ -164,9 +173,9 @@
 }
 
 .cal-dow {
-  padding: 12px 0;
+  padding: clamp(8px, 1.5vw, 12px) 0;
   text-align: center;
-  font-size: 0.72rem;
+  font-size: clamp(0.62rem, 1.4vw, 0.72rem);
   font-weight: 600;
   color: #94a3b8;
   text-transform: uppercase;
@@ -180,13 +189,14 @@
 }
 
 .cal-day {
-  min-height: 90px;
-  padding: 10px 8px 8px;
+  min-height: clamp(60px, 8vw, 90px);
+  padding: clamp(6px, 1vw, 10px) clamp(4px, 0.8vw, 8px) 6px;
   border-right: 1px solid #f1f5f9;
   border-bottom: 1px solid #f1f5f9;
   cursor: pointer;
   transition: background 0.15s ease;
   position: relative;
+  overflow: hidden;
 }
 
 .cal-day:nth-child(7n) {
@@ -218,16 +228,17 @@
 
 /* ── Day number ── */
 .day-num {
-  font-size: 0.82rem;
+  font-size: clamp(0.7rem, 1.5vw, 0.82rem);
   font-weight: 600;
   color: #334155;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
+  width: clamp(22px, 3.5vw, 26px);
+  height: clamp(22px, 3.5vw, 26px);
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .cal-day.today .day-num {
@@ -238,9 +249,9 @@
 /* ── Event chips inside day cells ── */
 .event-chip {
   display: block;
-  padding: 2px 7px;
+  padding: 2px 5px;
   border-radius: 4px;
-  font-size: 0.68rem;
+  font-size: clamp(0.6rem, 1.2vw, 0.68rem);
   font-weight: 500;
   margin-bottom: 2px;
   white-space: nowrap;
@@ -250,9 +261,7 @@
   transition: opacity 0.15s;
 }
 
-.event-chip:hover {
-  opacity: 0.8;
-}
+.event-chip:hover { opacity: 0.8; }
 
 .event-chip.chip-tech    { background: #dbeafe; color: #1d4ed8; }
 .event-chip.chip-nontech { background: #d1fae5; color: #065f46; }
@@ -266,14 +275,16 @@
 }
 
 .more-chip {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   color: #94a3b8;
   font-weight: 500;
-  padding: 1px 6px;
+  padding: 1px 4px;
 }
 
 /* ══════════════════════════════════════════════════
    DETAIL PANEL
+   Desktop: appears below calendar
+   Mobile (≤600px): full-width card
    ══════════════════════════════════════════════════ */
 .detail-panel {
   margin-top: 20px;
@@ -285,19 +296,26 @@
   animation: fadeSlideUp 0.22s ease forwards;
 }
 
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .detail-header {
-  padding: 18px 24px;
+  padding: clamp(14px, 2.5vw, 18px) clamp(16px, 3vw, 24px);
   border-bottom: 1px solid #f1f5f9;
   background: #f8fafc;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
 }
 
 .detail-header h3 {
-  font-size: 0.9rem;
+  font-size: clamp(0.85rem, 2vw, 0.9rem);
   font-weight: 700;
   color: #1e293b;
+  flex: 1;
 }
 
 .detail-close {
@@ -306,34 +324,37 @@
   cursor: pointer;
   font-size: 1.1rem;
   color: #94a3b8;
-  padding: 4px;
+  padding: 6px;
   line-height: 1;
+  min-width: 36px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  touch-action: manipulation;
+  transition: all 0.15s;
 }
 
 .detail-close:hover {
   color: #475569;
+  background: #f1f5f9;
 }
 
-.detail-body {
-  padding: 0;
-}
+.detail-body { padding: 0; }
 
 .detail-event-row {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
-  padding: 16px 24px;
+  gap: clamp(10px, 2vw, 16px);
+  padding: clamp(12px, 2vw, 16px) clamp(16px, 3vw, 24px);
   border-bottom: 1px solid #f1f5f9;
   transition: background 0.15s;
+  flex-wrap: wrap;
 }
 
-.detail-event-row:last-child {
-  border-bottom: none;
-}
-
-.detail-event-row:hover {
-  background: #f8fafc;
-}
+.detail-event-row:last-child { border-bottom: none; }
+.detail-event-row:hover { background: #f8fafc; }
 
 .detail-cat-badge {
   padding: 4px 12px;
@@ -343,30 +364,19 @@
   flex-shrink: 0;
   align-self: flex-start;
   margin-top: 2px;
+  white-space: nowrap;
 }
 
-.detail-info {
-  flex: 1;
-}
-
-.detail-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #1e293b;
-  margin-bottom: 4px;
-}
-
-.detail-meta {
-  font-size: 0.78rem;
-  color: #64748b;
-  margin-bottom: 2px;
-}
+.detail-info { flex: 1; min-width: 0; }
+.detail-title { font-size: clamp(0.85rem, 2vw, 0.9rem); font-weight: 600; color: #1e293b; margin-bottom: 4px; }
+.detail-meta  { font-size: clamp(0.72rem, 1.5vw, 0.78rem); color: #64748b; margin-bottom: 2px; }
 
 .detail-actions {
   display: flex;
   gap: 8px;
   align-items: center;
   flex-shrink: 0;
+  flex-wrap: wrap;
 }
 
 .reg-status-badge {
@@ -374,9 +384,10 @@
   border-radius: 20px;
   font-size: 0.72rem;
   font-weight: 600;
+  white-space: nowrap;
 }
 
-.reg-status-badge.present  { background: #dcfce7; color: #166534; }
+.reg-status-badge.present    { background: #dcfce7; color: #166534; }
 .reg-status-badge.registered { background: #fef9c3; color: #854d0e; }
 
 .register-chip-btn {
@@ -390,6 +401,8 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  touch-action: manipulation;
+  min-height: 34px;
 }
 
 .register-chip-btn:hover {
@@ -398,26 +411,50 @@
 }
 
 .detail-empty {
-  padding: 28px 24px;
+  padding: clamp(20px, 4vw, 28px) 24px;
   text-align: center;
   color: #94a3b8;
-  font-size: 0.83rem;
+  font-size: clamp(0.78rem, 1.8vw, 0.83rem);
 }
 
 /* ══════════════════════════════════════════════════
    RESPONSIVE
    ══════════════════════════════════════════════════ */
+
+/* ── 900px — tablet ─── */
 @media (max-width: 900px) {
-  .calendar-wrapper { padding: 24px 20px 40px; }
-  .cal-day { min-height: 72px; }
+  .calendar-wrapper {
+    padding: clamp(18px, 3vw, 24px) clamp(14px, 3vw, 20px) clamp(36px, 6vw, 48px);
+  }
+  .cal-day {
+    min-height: 72px;
+  }
 }
 
+/* ── 768px — tablets ─── */
+@media (max-width: 768px) {
+  .cal-page-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .cal-legend {
+    gap: 8px;
+  }
+}
+
+/* ── 600px — large phone ─── */
 @media (max-width: 600px) {
-  .event-chip { display: none; }
-  .cal-day { min-height: 52px; padding: 8px 4px; }
-  .cal-page-header { flex-direction: column; }
-  .cal-legend { display: none; }
-  /* Show a dot instead of chip on mobile */
+  .calendar-wrapper {
+    padding: 16px 12px 36px;
+  }
+  .cal-day {
+    min-height: 52px;
+    padding: 6px 3px;
+  }
+  /* Hide text chips, show dot indicators instead */
+  .event-chip {
+    display: none;
+  }
   .cal-day.has-events::after {
     content: '';
     display: block;
@@ -425,6 +462,63 @@
     height: 6px;
     border-radius: 50%;
     background: #2563eb;
-    margin: 4px auto 0;
+    margin: 3px auto 0;
+  }
+  /* Detail panel becomes a card below */
+  .detail-panel {
+    border-radius: 12px;
+  }
+  .detail-event-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .detail-actions {
+    width: 100%;
+  }
+}
+
+/* ── 425px — medium phone ─── */
+@media (max-width: 425px) {
+  .calendar-wrapper {
+    padding: 14px 10px 28px;
+  }
+  .cal-header {
+    padding: 12px 12px;
+    flex-wrap: nowrap;
+  }
+  .cal-dow {
+    font-size: 0.58rem;
+    letter-spacing: 0;
+    padding: 7px 0;
+  }
+  .cal-day {
+    min-height: 44px;
+    padding: 5px 2px;
+  }
+  .cal-legend {
+    display: none;
+  }
+  .cal-page-header p {
+    display: none;
+  }
+}
+
+/* ── 375px — iPhone SE ─── */
+@media (max-width: 375px) {
+  .calendar-wrapper {
+    padding: 12px 8px 24px;
+  }
+  .cal-day {
+    min-height: 40px;
+  }
+}
+
+/* ── 1440px — large desktop ─── */
+@media (min-width: 1440px) {
+  .calendar-wrapper {
+    padding: 40px clamp(40px, 5vw, 80px) 60px;
+  }
+  .cal-day {
+    min-height: 100px;
   }
 }

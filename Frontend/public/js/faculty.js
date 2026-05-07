@@ -1,14 +1,12 @@
-// Add this at the top of the file for testing
+// Fix #2: Removed alert('Test function works!') — use showToast instead
 function testButtonClick() {
-  alert('Test function works!');
   console.log('Test button clicked!');
 }
 
 // Add this function to handle the button click properly
 function handleMarkAllPresent(eventId) {
-  // Get absent IDs from cache
   if (!regCache[eventId]) {
-    alert('No registration data found for this event!');
+    showToast('No registration data found for this event!', 'error');
     return;
   }
   
@@ -37,8 +35,8 @@ const token = localStorage.getItem("token");
 const role = localStorage.getItem("role");
 
 if (!token || role !== "faculty") {
-  alert("Unauthorized access");
-  window.location.href = "login.html";
+  // Fix #2: Silent redirect — no alert()
+  window.location.replace("login.html");
 }
 
 function logout() {
@@ -352,19 +350,9 @@ async function viewRegistrations(eventId) {
 // ===============================
 function renderRegistrationPanel(eventId, searchQuery) {
   const container = document.getElementById(`registrations-${eventId}`);
-  if (!container || !regCache[eventId]) {
-    console.log('❌ DEBUG: No container or cache data');
-    console.log('   Container exists:', !!container);
-    console.log('   Cache exists:', !!regCache[eventId]);
-    return;
-  }
+  if (!container || !regCache[eventId]) return;
 
   const { registrations, presentIds } = regCache[eventId];
-
-  console.log('🔍 DEBUG: Data received:');
-  console.log('   Registrations:', registrations.length);
-  console.log('   Present IDs:', presentIds.length);
-  console.log('   Registrations data:', registrations);
 
   const filtered = searchQuery
     ? registrations.filter(r =>
@@ -374,16 +362,11 @@ function renderRegistrationPanel(eventId, searchQuery) {
     : registrations;
 
   const presentCount = registrations.filter(r => presentIds.includes(r.studentId?._id)).length;
-  const absentCount = registrations.length - presentCount;
-  const absentIds = registrations
+  const absentCount  = registrations.length - presentCount;
+  const absentIds    = registrations
     .filter(r => !presentIds.includes(r.studentId?._id))
     .map(r => r.studentId?._id)
     .filter(Boolean);
-
-  console.log('🔍 DEBUG: Calculations:');
-  console.log('   Present count:', presentCount);
-  console.log('   Absent count:', absentCount);
-  console.log('   Absent IDs:', absentIds);
 
   const bulkHTML = absentCount > 0
     ? `<button class="bulk-att-btn" onclick="handleMarkAllPresent('${eventId}')">✓ Mark All Present (${absentCount})</button>`
@@ -444,13 +427,6 @@ function onPanelSearch(eventId, query) {
 // MARK ALL PRESENT (BULK)
 // ===============================
 async function markAllAttendance(eventId, absentIds) {
-  console.log('🎯 MARK ALL ATTENDANCE DEBUG:');
-  console.log('   Event ID:', eventId);
-  console.log('   Absent IDs:', absentIds);
-  console.log('   API URL:', `${API_URL}/mark-attendance`);
-  console.log('   Token exists:', !!token);
-  console.log('   Token length:', token ? token.length : 0);
-
   if (!absentIds.length) {
     showToast('All students are already marked present!', 'info');
     return;
@@ -460,9 +436,7 @@ async function markAllAttendance(eventId, absentIds) {
 
   try {
     const results = await Promise.all(
-      absentIds.map(async (studentId, index) => {
-        console.log(`📝 Marking attendance for student ${index + 1}: ${studentId}`);
-
+      absentIds.map(async (studentId) => {
         const response = await fetch(`${API_URL}/mark-attendance`, {
           method: "POST",
           headers: {
@@ -472,22 +446,15 @@ async function markAllAttendance(eventId, absentIds) {
           body: JSON.stringify({ eventId, studentId })
         });
 
-        console.log(`📊 Response ${index + 1}:`, response.status, response.statusText);
-
         if (!response.ok) {
           const errorText = await response.text();
-          console.log(`❌ Error response ${index + 1}:`, errorText);
-          throw new Error(`Failed to mark attendance for student ${studentId}: ${response.status} - ${errorText}`);
+          throw new Error(`Failed for student ${studentId}: ${response.status}`);
         }
-
-        const data = await response.json();
-        console.log(`✅ Success response ${index + 1}:`, data);
-        return data;
+        return response.json();
       })
     );
 
     const successCount = results.filter(r => r.message && r.message.includes('successfully')).length;
-    console.log(`🎉 Final result: ${successCount}/${results.length} successful`);
 
     if (successCount > 0) {
       showToast(`✔ Successfully marked ${successCount} students present!`);
@@ -496,7 +463,7 @@ async function markAllAttendance(eventId, absentIds) {
       showToast("No attendance was marked", "error");
     }
   } catch (error) {
-    console.error("❌ Bulk Attendance Error:", error);
+    console.error("Bulk Attendance Error:", error);
     showToast("Failed to mark all present: " + error.message, "error");
   }
 }

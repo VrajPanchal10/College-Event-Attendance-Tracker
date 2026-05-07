@@ -1,13 +1,16 @@
 /* ══════════════════════════════════════════════════
    event-details.css
    Only for event-details.html
-   Load AFTER components.css
+   Load AFTER components.css → BEFORE responsive.css
    ══════════════════════════════════════════════════ */
 
+/* ══════════════════════════════════════════════════
+   PAGE CONTAINER
+   ══════════════════════════════════════════════════ */
 .event-container {
-  max-width: 760px;
-  margin: 40px auto;
-  padding: 0 24px 60px;
+  max-width: 780px;
+  margin: clamp(20px, 4vw, 40px) auto;
+  padding: 0 clamp(14px, 4vw, 24px) clamp(40px, 8vw, 60px);
 }
 
 /* ══════════════════════════════════════════════════
@@ -18,9 +21,9 @@
    ══════════════════════════════════════════════════ */
 .event-banner {
   width: 100%;
-  border-radius: 18px;
+  border-radius: clamp(12px, 3vw, 18px);
   overflow: hidden;
-  margin-bottom: 32px;
+  margin-bottom: clamp(20px, 4vw, 32px);
   box-shadow: 0 8px 32px rgba(30, 41, 59, 0.16);
   background: #e2e8f0;
   aspect-ratio: 16 / 6;
@@ -43,18 +46,19 @@
    EVENT TITLE
    ══════════════════════════════════════════════════ */
 .event-container h1 {
-  font-size: 1.9rem;
+  font-size: clamp(1.3rem, 4vw, 1.9rem);
   font-weight: 700;
   color: #1e293b;
   letter-spacing: -0.03em;
   margin-bottom: 8px;
   line-height: 1.25;
+  word-break: break-word;
 }
 
 .event-container h1::after {
   content: '';
   display: block;
-  width: 48px;
+  width: clamp(36px, 5vw, 48px);
   height: 3px;
   background: linear-gradient(135deg, #7c3aed, #2563eb);
   border-radius: 2px;
@@ -62,21 +66,21 @@
 }
 
 /* ══════════════════════════════════════════════════
-   EVENT META
+   EVENT META GRID
    ══════════════════════════════════════════════════ */
 .event-meta {
   background: #ffffff;
   border-radius: 14px;
-  padding: 24px 28px;
-  margin-top: 28px;
+  padding: clamp(16px, 3vw, 24px) clamp(16px, 3vw, 28px);
+  margin-top: clamp(18px, 3vw, 28px);
   border: 1px solid #e2e8f0;
   box-shadow: 0 2px 10px rgba(30, 41, 59, 0.06);
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px 32px;
+  gap: clamp(10px, 2vw, 14px) clamp(16px, 4vw, 32px);
 }
 
-.event-meta p        { font-size: 0.88rem; color: #475569; line-height: 1.6; }
+.event-meta p        { font-size: clamp(0.8rem, 1.8vw, 0.88rem); color: #475569; line-height: 1.6; }
 .event-meta p strong { color: #1e293b; font-weight: 600; }
 .event-meta span     { color: #2563eb; font-weight: 500; }
 
@@ -86,14 +90,14 @@
 .event-description {
   background: #ffffff;
   border-radius: 14px;
-  padding: 24px 28px;
-  margin-top: 20px;
+  padding: clamp(16px, 3vw, 24px) clamp(16px, 3vw, 28px);
+  margin-top: clamp(14px, 2.5vw, 20px);
   border: 1px solid #e2e8f0;
   box-shadow: 0 2px 10px rgba(30, 41, 59, 0.06);
 }
 
 .event-description h3 {
-  font-size: 1rem;
+  font-size: clamp(0.88rem, 2vw, 1rem);
   font-weight: 700;
   color: #1e293b;
   margin-bottom: 12px;
@@ -102,7 +106,7 @@
 }
 
 .event-description p {
-  font-size: 0.88rem;
+  font-size: clamp(0.82rem, 1.8vw, 0.88rem);
   color: #64748b;
   line-height: 1.8;
 }
@@ -111,17 +115,79 @@
    EVENT ACTIONS
    ══════════════════════════════════════════════════ */
 .event-actions {
-  margin-top: 28px;
+  margin-top: clamp(20px, 4vw, 28px);
   display: flex;
-  gap: 12px;
+  gap: clamp(8px, 1.5vw, 12px);
+  flex-wrap: wrap;  /* FIXED: wraps on small screens instead of overflowing */
+}
+
+.event-actions button,
+.event-actions a {
+  flex: 1;
+  min-width: clamp(120px, 30vw, 160px);
+  text-align: center;
 }
 
 /* ══════════════════════════════════════════════════
    RESPONSIVE
    ══════════════════════════════════════════════════ */
+
+/* ── 600px — large phone ─── */
 @media (max-width: 600px) {
-  .event-container   { margin: 16px auto; padding: 0 16px 40px; }
-  .event-banner      { border-radius: 12px; aspect-ratio: 16 / 7; }
-  .event-container h1{ font-size: 1.5rem; }
-  .event-meta        { grid-template-columns: 1fr; gap: 10px; }
+  .event-container {
+    margin: 14px auto;
+    padding: 0 14px 36px;
+  }
+  .event-banner {
+    border-radius: 12px;
+    aspect-ratio: 16 / 7;
+  }
+  .event-meta {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .event-actions {
+    flex-direction: column;
+  }
+  .event-actions button,
+  .event-actions a {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+/* ── 425px — medium phone ─── */
+@media (max-width: 425px) {
+  .event-container {
+    padding: 0 12px 28px;
+  }
+  .event-banner {
+    border-radius: 10px;
+    aspect-ratio: 16 / 8;
+  }
+}
+
+/* ── 375px — iPhone SE ─── */
+@media (max-width: 375px) {
+  .event-container {
+    margin: 10px auto;
+    padding: 0 10px 24px;
+  }
+  .event-container h1 {
+    font-size: 1.2rem;
+  }
+}
+
+/* ── 320px — smallest phones ─── */
+@media (max-width: 320px) {
+  .event-container {
+    padding: 0 8px 20px;
+  }
+}
+
+/* ── 1440px — large desktop ─── */
+@media (min-width: 1440px) {
+  .event-container {
+    margin: 52px auto;
+  }
 }

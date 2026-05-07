@@ -60,7 +60,6 @@ function checkRegisterPwd(v) {
     overallCount.style.color = PWD_COLORS[passed] || '#94a3b8';
   }
 
-  // Enable/disable register button
   const btn = document.getElementById('registerBtn');
   if (btn) btn.disabled = passed < 5;
 }
@@ -75,7 +74,7 @@ function toggleRegisterEye() {
 
 
 // ===============================
-// LOGIN
+// LOGIN — Fix #4: Loading state + Fix #2: No alert()
 // ===============================
 async function login(event) {
   event.preventDefault();
@@ -84,8 +83,15 @@ async function login(event) {
   const password = document.getElementById("password").value;
   const role     = document.getElementById("role").value;
 
-  try {
+  // Fix #4: Show loading state on button
+  const btn = document.getElementById("loginBtn");
+  const originalText = btn ? btn.innerHTML : "";
+  if (btn) {
+    btn.innerHTML = "Signing in...";
+    btn.disabled  = true;
+  }
 
+  try {
     const res  = await fetch(`${API_URL}/auth/login`, {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
@@ -107,18 +113,21 @@ async function login(event) {
       }
 
     } else {
-      alert(data.message || "Login failed");
+      // Fix #2: Show styled error instead of alert()
+      showAuthError(data.message || "Login failed. Please check your credentials.");
+      if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
     }
 
   } catch (err) {
     console.error("Login error:", err);
-    alert("Something went wrong. Please check your connection and try again.");
+    showAuthError("Connection error. Please check your network and try again.");
+    if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
   }
 }
 
 
 // ===============================
-// REGISTER
+// REGISTER — Fix #4: Loading state + Fix #2: No alert()
 // ===============================
 async function register(event) {
   event.preventDefault();
@@ -128,21 +137,26 @@ async function register(event) {
   const password = document.getElementById("password").value;
   const role     = document.getElementById("role").value;
 
-  // ── Frontend password strength check ──
-  // Blocks submission if not all 5 rules pass
-  const rules = getPasswordRules(password);
+  // Frontend password strength check
+  const rules  = getPasswordRules(password);
   const allPass = Object.values(rules).every(Boolean);
 
   if (!allPass) {
-    // Show popover with errors visible
-    showPopover();
-    checkPasswordStrength(password);
-    alert("Please make sure your password meets all the requirements shown.");
+    showRegisterPop();
+    checkRegisterPwd(password);
+    showAuthError("Please make sure your password meets all the requirements shown.");
     return;
   }
 
-  try {
+  // Fix #4: Show loading state
+  const btn = document.getElementById("registerBtn");
+  const originalText = btn ? btn.innerHTML : "";
+  if (btn) {
+    btn.innerHTML = "Creating account...";
+    btn.disabled  = true;
+  }
 
+  try {
     const res  = await fetch(`${API_URL}/auth/register`, {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
@@ -152,16 +166,55 @@ async function register(event) {
     const data = await res.json();
 
     if (res.ok) {
-      alert(data.message);
-      window.location.href = "login.html";
+      // Fix #2: No alert() — show inline success then redirect
+      showAuthSuccess(data.message || "Account created! Redirecting to login...");
+      setTimeout(() => { window.location.href = "login.html"; }, 1800);
     } else {
-      alert(data.message || "Registration failed");
+      showAuthError(data.message || "Registration failed.");
+      if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
     }
 
   } catch (err) {
     console.error("Register error:", err);
-    alert("Something went wrong. Please check your connection and try again.");
+    showAuthError("Connection error. Please check your network and try again.");
+    if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
   }
+}
+
+
+// ===============================
+// AUTH ERROR / SUCCESS DISPLAY
+// Fix #2: Replaces all alert() calls with inline styled messages
+// ===============================
+function showAuthError(msg) {
+  let el = document.getElementById("authMsg");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "authMsg";
+    el.className = "auth-msg auth-msg-error";
+    // Insert before the first button or at end of form
+    const form = document.querySelector("form");
+    if (form) form.insertBefore(el, form.querySelector("button[type='submit']"));
+  }
+  el.className = "auth-msg auth-msg-error";
+  el.textContent = msg;
+  el.style.display = "block";
+  // Auto-hide after 5s
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.style.display = "none"; }, 5000);
+}
+
+function showAuthSuccess(msg) {
+  let el = document.getElementById("authMsg");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "authMsg";
+    const form = document.querySelector("form");
+    if (form) form.insertBefore(el, form.querySelector("button[type='submit']"));
+  }
+  el.className = "auth-msg auth-msg-success";
+  el.textContent = msg;
+  el.style.display = "block";
 }
 
 
@@ -181,7 +234,6 @@ function getPasswordRules(val) {
 
 // ===============================
 // PASSWORD STRENGTH — live update
-// Called by oninput on password field
 // ===============================
 const STRENGTH_LABELS = ["", "Weak", "Fair", "Good", "Strong", "Very Strong"];
 const STRENGTH_COLORS = ["", "#ef4444", "#f59e0b", "#3b82f6", "#2563eb", "#16a34a"];
@@ -191,25 +243,26 @@ function checkPasswordStrength(val) {
   const rules  = getPasswordRules(val);
   const passed = RULE_KEYS.filter(k => rules[k]).length;
 
-  // Update each row
   RULE_KEYS.forEach(k => {
-    document.getElementById("pl-" + k).classList.toggle("pass", rules[k]);
-    document.getElementById("pf-" + k).classList.toggle("pass", rules[k]);
-    document.getElementById("pc-" + k).classList.toggle("pass", rules[k]);
+    const lbl = document.getElementById("pl-" + k);
+    const fil = document.getElementById("pf-" + k);
+    const chk = document.getElementById("pc-" + k);
+    if (lbl) lbl.classList.toggle("pass", rules[k]);
+    if (fil) fil.classList.toggle("pass", rules[k]);
+    if (chk) chk.classList.toggle("pass", rules[k]);
   });
 
-  // Overall bar
-  const fill  = document.getElementById("overallFill");
-  fill.style.width      = (passed / 5 * 100) + "%";
-  fill.style.background = STRENGTH_COLORS[passed] || "#e2e8f0";
+  const fill = document.getElementById("overallFill");
+  if (fill) {
+    fill.style.width      = (passed / 5 * 100) + "%";
+    fill.style.background = STRENGTH_COLORS[passed] || "#e2e8f0";
+  }
 
-  // Labels
-  document.getElementById("overallTxt").textContent  = passed > 0 ? STRENGTH_LABELS[passed] : "Start typing";
-  document.getElementById("overallTxt").style.color  = STRENGTH_COLORS[passed] || "#94a3b8";
-  document.getElementById("overallCount").textContent = passed + " / 5";
-  document.getElementById("overallCount").style.color = STRENGTH_COLORS[passed] || "#94a3b8";
+  const txt   = document.getElementById("overallTxt");
+  const count = document.getElementById("overallCount");
+  if (txt)   { txt.textContent = passed > 0 ? STRENGTH_LABELS[passed] : "Start typing"; txt.style.color = STRENGTH_COLORS[passed] || "#94a3b8"; }
+  if (count) { count.textContent = passed + " / 5"; count.style.color = STRENGTH_COLORS[passed] || "#94a3b8"; }
 
-  // Enable / disable register button
   const btn = document.getElementById("registerBtn");
   if (btn) btn.disabled = passed < 5;
 }
@@ -224,7 +277,6 @@ function showPopover() {
 }
 
 function hidePopover() {
-  // Small delay so clicking eye-btn doesn't instantly close it
   setTimeout(() => {
     const pop = document.getElementById("pwdPopover");
     if (pop) pop.classList.remove("show");
@@ -233,7 +285,7 @@ function hidePopover() {
 
 
 // ===============================
-// EYE TOGGLE — show / hide password
+// EYE TOGGLE — show / hide password (Login page)
 // ===============================
 function toggleEye() {
   const inp = document.getElementById("password");
@@ -241,10 +293,10 @@ function toggleEye() {
   if (!inp) return;
 
   if (inp.type === "password") {
-    inp.type         = "text";
-    btn.innerHTML    = "&#128064;";
+    inp.type      = "text";
+    if (btn) btn.innerHTML = "&#128064;";
   } else {
-    inp.type         = "password";
-    btn.innerHTML    = "&#128065;";
+    inp.type      = "password";
+    if (btn) btn.innerHTML = "&#128065;";
   }
 }

@@ -3,15 +3,26 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Event Calendar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Event Calendar — View all college events by month and track your registrations on the College Event Attendance Tracker.">
+  <title>Event Calendar — College Event Attendance Tracker</title>
+  <!-- Fix #22: Emoji favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="../public/css/components.css">
   <link rel="stylesheet" href="../public/css/calendar.css">
+  <link rel="stylesheet" href="../public/css/responsive.css">
 </head>
 
 <body class="page-enter">
 
+  <!-- TOPBAR -->
   <div class="topbar">
-    <div class="logo">Event Attendance Tracker</div>
+    <!-- Fix #19: aria-hidden on decorative emoji -->
+    <div class="logo"><span aria-hidden="true">🎓</span> Event Attendance Tracker</div>
+
+    <!-- Desktop navigation -->
     <div class="top-actions">
       <a href="student-dashboard.html" class="nav-link">Dashboard</a>
       <span class="nav-link active">Calendar</span>
@@ -20,6 +31,25 @@
       <span class="role-badge">Student</span>
       <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
+
+    <!-- Hamburger button (mobile only) -->
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation" aria-expanded="false">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+
+    <!-- Mobile navigation panel -->
+    <nav class="mobile-nav" aria-label="Mobile navigation">
+      <a href="student-dashboard.html" class="nav-link">Dashboard</a>
+      <span class="nav-link active">Calendar</span>
+      <a href="attendance.html" class="nav-link">My Attendance</a>
+      <a href="profile.html" class="nav-link">Profile</a>
+      <div class="mobile-nav-sep"></div>
+      <span class="role-badge">Student</span>
+      <div class="mobile-nav-sep"></div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </nav>
   </div>
 
 
@@ -45,8 +75,8 @@
       <!-- Month navigation -->
       <div class="cal-header">
         <div class="cal-nav-group">
-          <button class="cal-nav-btn" onclick="changeMonth(-1)">&#8249;</button>
-          <button class="cal-nav-btn" onclick="changeMonth(1)">&#8250;</button>
+          <button class="cal-nav-btn" onclick="changeMonth(-1)" aria-label="Previous month">&#8249;</button>
+          <button class="cal-nav-btn" onclick="changeMonth(1)" aria-label="Next month">&#8250;</button>
         </div>
         <span class="cal-month-title" id="calMonthTitle">Loading...</span>
         <button class="cal-today-btn" onclick="goToToday()">Today</button>
@@ -73,7 +103,7 @@
     <div class="detail-panel" id="detailPanel" style="display:none">
       <div class="detail-header">
         <h3 id="detailTitle">Events</h3>
-        <button class="detail-close" onclick="closeDetail()">✕</button>
+        <button class="detail-close" onclick="closeDetail()" aria-label="Close detail panel">✕</button>
       </div>
       <div class="detail-body" id="detailBody"></div>
     </div>
@@ -81,9 +111,11 @@
   </div>
 
 
-  <div id="toast" class="toast"></div>
+  <!-- Fix #8/#10: Toast BEFORE scripts + aria-live -->
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <script src="../public/js/calendar.js"></script>
+  <script src="../public/js/mobile-menu.js"></script>
 
 </body>
 

@@ -1,23 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <title>My Attendance</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="My Attendance — View your complete event attendance history on the College Event Attendance Tracker.">
+  <title>My Attendance — College Event Attendance Tracker</title>
+  <!-- Fix #22: Emoji favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="../public/css/components.css">
   <link rel="stylesheet" href="../public/css/attendance.css">
+  <link rel="stylesheet" href="../public/css/responsive.css">
 </head>
 
 <body class="page-enter">
 
+  <!-- Fix #8/#10: Toast BEFORE scripts + aria-live -->
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- TOPBAR -->
   <div class="topbar">
+    <!-- Fix #19: aria-hidden on decorative emoji -->
+    <div class="logo"><span aria-hidden="true">🎓</span> Event Attendance Tracker</div>
 
-    <div class="logo">Event Attendance Tracker</div>
-
+    <!-- Desktop navigation -->
     <div class="top-actions">
       <span class="role-badge">Student</span>
+      <a href="student-dashboard.html" class="nav-link">Dashboard</a>
       <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
 
+    <!-- Hamburger button (mobile only) -->
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation" aria-expanded="false">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+
+    <!-- Mobile navigation panel -->
+    <nav class="mobile-nav" aria-label="Mobile navigation">
+      <span class="role-badge">Student</span>
+      <div class="mobile-nav-sep"></div>
+      <a href="student-dashboard.html" class="nav-link">Dashboard</a>
+      <div class="mobile-nav-sep"></div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </nav>
   </div>
 
 
@@ -35,24 +64,26 @@
     </div>
 
 
+    <!-- Scrollable wrapper prevents horizontal overflow on mobile -->
     <div class="attendance-table-container">
+      <div class="table-scroll-wrap">
+        <table class="attendance-table">
 
-      <table class="attendance-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Event Title</th>
+              <th>Category</th>
+              <th>Date Attended</th>
+              <th>Status</th>
+            </tr>
+          </thead>
 
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Event Title</th>
-            <th>Category</th>
-            <th>Date Attended</th>
-            <th>Status</th>
-          </tr>
-        </thead>
+          <tbody id="attendanceBody">
+          </tbody>
 
-        <tbody id="attendanceBody">
-        </tbody>
-
-      </table>
+        </table>
+      </div>
 
       <div id="emptyState" class="empty-state" style="display:none;">
         <p>No attendance records found.</p>
@@ -64,6 +95,7 @@
 
 
   <script src="../public/js/attendance.js"></script>
+  <script src="../public/js/mobile-menu.js"></script>
 
 </body>
 

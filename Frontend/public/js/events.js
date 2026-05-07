@@ -3,8 +3,8 @@ const BASE_URL = "http://localhost:5000";
 const token    = localStorage.getItem("token");
 
 if (!token) {
-  alert("Please login first");
-  window.location.href = "login.html";
+  // Fix #2: Silent redirect — no alert()
+  window.location.replace("login.html");
 }
 
 const params  = new URLSearchParams(window.location.search);

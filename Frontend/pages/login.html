@@ -1,59 +1,17 @@
-<!-- <!DOCTYPE html>
-<html>
-
-<head>
-  <title>Login to your account</title>
-  <link rel="stylesheet" href="../public/css/LOGIN.css">
-</head>
-
-<body>
-  <div class="container">
-    
-    <h1 class="heading">Sign In</h1>
-    <p class="subtitle">Access your Event Attendance Dashboard</p>
-
-    <form onsubmit="login(event)" class="form">
-
-      <div class="input-field">
-        <label>Email</label>
-        <input type="email" id="email" name="email" required>
-      </div>
-
-      <div class="input-field">
-        <label>Password</label>
-        <input type="password" id="password" name="password" required>
-
-      <div class="input-field">
-        <label>Role</label>
-        <select id="role" required>
-          <option value="" disabled selected>Select Role</option>
-          <option value="student">Student</option>
-          <option value="faculty">Faculty</option>
-        </select>
-      </div>
-
-      <div class="btn-container">
-        <button type="submit" class="btn">Sign In</button>
-      </div>
-
-      <div class="create-link">
-        New here? <a href="register.html">Create Account</a>
-      </div>
-
-    </form>
-    
-  </div>
-  <script src="../public/js/auth.js"></script>
-</body>
-
-</html> -->
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <title>Login to your account</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sign in to College Event Attendance Tracker — Access your student or faculty dashboard to manage events and track attendance.">
+  <title>Sign In — College Event Attendance Tracker</title>
+  <!-- Fix #22: Emoji favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="../public/css/LOGIN.css">
+  <link rel="stylesheet" href="../public/css/responsive.css">
 </head>
 
 <body>
@@ -62,20 +20,24 @@
     <h1 class="heading">Sign In</h1>
     <p class="subtitle">Access your Event Attendance Dashboard</p>
 
-    <form onsubmit="login(event)" class="form">
+    <form onsubmit="login(event)" class="form" novalidate>
 
       <div class="input-field">
-        <label>Email</label>
-        <input type="email" id="email" name="email" required>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" autocomplete="email" required>
       </div>
 
       <div class="input-field">
-        <label>Password</label>
-        <input type="password" id="password" name="password" required>
+        <label for="password">Password</label>
+        <!-- Fix #3: Added eye toggle to login page password field -->
+        <div class="pwd-wrap">
+          <input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
+          <button type="button" class="eye-toggle" id="eyeBtn" onclick="toggleEye()" aria-label="Show or hide password">&#128065;</button>
+        </div>
       </div>
 
       <div class="input-field">
-        <label>Role</label>
+        <label for="role">Role</label>
         <select id="role" required>
           <option value="" disabled selected>Select Role</option>
           <option value="student">Student</option>
@@ -84,7 +46,7 @@
       </div>
 
       <div class="btn-container">
-        <button type="submit" class="btn">Sign In</button>
+        <button type="submit" class="btn" id="loginBtn">Sign In</button>
       </div>
 
       <div class="forgot-password-container">

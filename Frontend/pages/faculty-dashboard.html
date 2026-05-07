@@ -1,16 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <title>Faculty Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Faculty Dashboard — Create and manage college events, track student registrations and attendance on the College Event Attendance Tracker.">
+  <title>Faculty Dashboard — College Event Attendance Tracker</title>
+  <!-- Fix #22: Emoji favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="../public/css/components.css">
   <link rel="stylesheet" href="../public/css/faculty-dashboard.css">
+  <link rel="stylesheet" href="../public/css/responsive.css">
 </head>
 
 <body class="page-enter">
 
+  <!-- Fix #8/#10: Toast BEFORE scripts + aria-live -->
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- TOPBAR -->
   <div class="topbar">
-    <div class="logo">College Event Attendance Tracker</div>
+    <!-- Fix #19: aria-hidden on decorative emoji -->
+    <div class="logo"><span aria-hidden="true">🎓</span> Event Attendance Tracker</div>
+
+    <!-- Desktop navigation -->
     <div class="top-actions">
       <span class="nav-link active">Dashboard</span>
       <a href="analytics.html" class="nav-link">Analytics</a>
@@ -18,6 +33,24 @@
       <span class="role-badge">Faculty</span>
       <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
+
+    <!-- Hamburger button (mobile only) -->
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation" aria-expanded="false">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+
+    <!-- Mobile navigation panel -->
+    <nav class="mobile-nav" aria-label="Mobile navigation">
+      <span class="nav-link active">Dashboard</span>
+      <a href="analytics.html" class="nav-link">Analytics</a>
+      <a href="profile.html" class="nav-link" id="profileLinkMobile">Profile</a>
+      <div class="mobile-nav-sep"></div>
+      <span class="role-badge">Faculty</span>
+      <div class="mobile-nav-sep"></div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </nav>
   </div>
 
 
@@ -91,7 +124,7 @@
           <span class="error-msg">⚠ Description cannot exceed 500 characters</span>
         </div>
 
-        <!-- ── NEW: Banner Image Upload ── -->
+        <!-- Banner Image Upload -->
         <div class="field full" id="f-image">
           <label>
             Banner Image
@@ -99,7 +132,6 @@
           </label>
 
           <div class="image-upload-area" id="imageUploadArea">
-            <!-- Hidden file input -->
             <input
               type="file"
               id="eventImage"
@@ -108,7 +140,6 @@
               onchange="previewImage(this)"
             >
 
-            <!-- Placeholder shown before upload -->
             <div class="upload-placeholder" id="uploadPlaceholder"
                  onclick="document.getElementById('eventImage').click()">
               <span class="upload-icon">🖼</span>
@@ -116,7 +147,6 @@
               <span class="upload-hint-small">Recommended: 1200 × 400 px</span>
             </div>
 
-            <!-- Preview shown after file selected or when editing -->
             <img id="imagePreview" class="image-preview-thumb"
                  style="display:none" alt="Banner preview"
                  onclick="document.getElementById('eventImage').click()">
@@ -127,7 +157,6 @@
             ✕ Remove Image
           </button>
         </div>
-        <!-- ── End Banner Image ── -->
 
       </div>
 
@@ -167,11 +196,11 @@
   </button>
 
 
-  <!-- CUSTOM CONFIRM MODAL -->
-  <div class="modal-overlay" id="confirmOverlay">
+  <!-- CUSTOM CONFIRM MODAL (Fix #7: role="dialog" + aria-modal + aria-labelledby) -->
+  <div class="modal-overlay" id="confirmOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-box">
       <div class="modal-icon-strip">
-        <div class="modal-icon-wrap" id="modalIconWrap">🗑️</div>
+        <div class="modal-icon-wrap" id="modalIconWrap" aria-hidden="true">🗑️</div>
         <div class="modal-titles">
           <h3 id="modalTitle">Confirm Action</h3>
           <p id="modalSubtitle">This action cannot be undone</p>
@@ -189,8 +218,13 @@
 
 
   <script src="../public/js/faculty.js"></script>
-
-  <div id="toast" class="toast"></div>
+  <script src="../public/js/mobile-menu.js"></script>
+  <!-- Fix #7: Escape closes modal -->
+  <script>
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
 
 </body>
 

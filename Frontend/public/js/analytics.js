@@ -6,8 +6,8 @@ const role    = localStorage.getItem("role");
 // AUTH CHECK
 // ===============================
 if (!token || role !== "faculty") {
-  alert("Unauthorized access");
-  window.location.href = "login.html";
+  // Fix #2: Silent redirect — no alert()
+  window.location.replace("login.html");
 }
 
 
