@@ -1,0 +1,272 @@
+/* ══════════════════════════════════════════════════
+   student-dashboard.css
+   Only for student-dashboard.html
+   Load AFTER components.css
+   ══════════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════════════
+   ATTENDANCE LINK — topbar button
+   ══════════════════════════════════════════════════ */
+.attendance-link {
+  display: inline-block;
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  transition: all 0.2s ease;
+}
+
+.attendance-link:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+/* ══════════════════════════════════════════════════
+   PAGE TITLE
+   ══════════════════════════════════════════════════ */
+h2 {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #1e293b;
+  padding: 30px 40px 0;
+  letter-spacing: -0.02em;
+}
+
+h2::after {
+  content: '';
+  display: block;
+  width: 42px;
+  height: 3px;
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  border-radius: 2px;
+  margin-top: 8px;
+}
+
+/* ══════════════════════════════════════════════════
+   STATS
+   ══════════════════════════════════════════════════ */
+.stats-container {
+  display: flex;
+  gap: 16px;
+  padding: 24px 40px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  flex: 1;
+  min-width: 130px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 22px 16px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 10px rgba(30, 41, 59, 0.07);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.13);
+}
+
+.stat-card h3 {
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 5px;
+  line-height: 1;
+}
+
+.stat-card p {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ══════════════════════════════════════════════════
+   SEARCH BAR
+   ══════════════════════════════════════════════════ */
+.search-container {
+  padding: 0 40px 14px;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: 1.5px solid #e2e8f0;
+  background: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.88rem;
+  color: #1e293b;
+  outline: none;
+  box-shadow: 0 2px 8px rgba(30, 41, 59, 0.05);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-container input::placeholder {
+  color: #94a3b8;
+}
+
+.search-container input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.11);
+}
+
+/* ══════════════════════════════════════════════════
+   FILTER BUTTONS
+   ══════════════════════════════════════════════════ */
+.filter-container {
+  padding: 0 40px 24px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 1.5px solid #e2e8f0;
+  background: #ffffff;
+  color: #475569;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  border-color: #2563eb;
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+.filter-btn.active {
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);
+}
+
+/* ══════════════════════════════════════════════════
+   EVENT LIST GRID
+   ══════════════════════════════════════════════════ */
+#eventList {
+  padding: 0 40px 60px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 22px;
+}
+
+/* ══════════════════════════════════════════════════
+   REMINDER BADGES
+   — Shown on event cards when event is within 48hrs
+   ══════════════════════════════════════════════════ */
+.reminder-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.reminder-badge.badge-today {
+  background: #fee2e2;
+  color: #991b1b;
+  animation: reminderPulse 1.8s ease-in-out infinite;
+}
+
+.reminder-badge.badge-tomorrow {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.reminder-badge.badge-soon {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+@keyframes reminderPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.75; transform: scale(0.97); }
+}
+
+/* ══════════════════════════════════════════════════
+   UNREGISTER BUTTON
+   — Appears on event cards when registered but not attended
+   ══════════════════════════════════════════════════ */
+.unregister-btn {
+  display: inline-block;
+  margin-top: 10px;
+  margin-left: 8px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1.5px solid #fca5a5;
+  background: #fff5f5;
+  color: #991b1b;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.unregister-btn:hover {
+  background: #fee2e2;
+  border-color: #f87171;
+  transform: translateY(-1px);
+}
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .stats-container { 
+    gap: 12px; 
+  }
+  #eventList { 
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+  }
+}
+
+@media (max-width: 600px) {
+  h2 { 
+    padding: 22px 20px 0; 
+  }
+  .stats-container { 
+    padding: 18px 20px; 
+  }
+  .stat-card h3 { 
+    font-size: 1.5rem; 
+  }
+  .search-container { 
+    padding: 0 20px 12px; 
+  }
+  .filter-container { 
+    padding: 0 20px 18px; 
+  }
+  #eventList { 
+    padding: 0 20px 40px; 
+    grid-template-columns: 1fr; 
+  }
+}

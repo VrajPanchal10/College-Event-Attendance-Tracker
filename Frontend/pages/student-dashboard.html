@@ -1,0 +1,213 @@
+<!-- <!DOCTYPE html>
+<html>
+
+<head>
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="../public/css/components.css">
+  <link rel="stylesheet" href="../public/css/student-dashboard.css">
+
+</head>
+
+<body class="page-enter">
+
+  <div class="topbar">
+
+    <div class="logo">Event Attendance Tracker</div>
+
+    <div class="top-actions">
+      <span class="role-badge">Student</span>
+      <a href="profile.html" class="nav-link" id="profileLink">Profile</a>
+      <a href="attendance.html" class="attendance-link">My Attendance</a>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+  </div>
+
+
+  <div id="loader" class="loader"></div>
+
+
+  <h2>Student Dashboard</h2>
+
+
+  <div class="stats-container">
+
+    <div class="stat-card">
+      <h3 id="upcomingCount">0</h3>
+      <p>Upcoming Events</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 id="totalEvents">0</h3>
+      <p>Total Events</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 id="registeredCount">0</h3>
+      <p>Registered</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 id="attendanceCount">0</h3>
+      <p>Attended</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 id="attendancePercent">0%</h3>
+      <p>Attendance %</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 id="missedCount">0</h3>
+      <p>Missed Events</p>
+    </div>
+
+  </div>
+
+
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search events by title..." oninput="handleSearch()">
+  </div>
+
+
+  <div class="filter-container">
+
+    <button class="filter-btn active" onclick="filterEvents('All')">All</button>
+
+    <button class="filter-btn" onclick="filterEvents('Tech')">Tech</button>
+
+    <button class="filter-btn" onclick="filterEvents('Non-Tech')">Non-Tech</button>
+
+    <button class="filter-btn" onclick="filterEvents('Yugantar')">Yugantar</button>
+
+    <button class="filter-btn" onclick="filterEvents('Gyanotsav')">Gyanotsav</button>
+
+    <button class="filter-btn" onclick="filterEvents('Sports')">Sports</button>
+
+  </div>
+
+
+  <div id="eventList"></div>
+
+
+  <script src="../public/js/dashboard.js"></script>
+
+  <div id="toast" class="toast"></div>
+
+</body>
+
+</html> -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="../public/css/components.css">
+  <link rel="stylesheet" href="../public/css/student-dashboard.css">
+</head>
+
+<body class="page-enter">
+
+  <div class="topbar">
+    <div class="logo">College Event Attendance Tracker</div>
+    <div class="top-actions">
+      <span class="role-badge">Student</span>
+      <a href="calendar.html" class="nav-link">📅 Calendar</a>
+      <a href="profile.html" class="nav-link" id="profileLink">Profile</a>
+      <a href="attendance.html" class="attendance-link">My Attendance</a>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+
+  <div id="loader" class="loader"></div>
+
+
+  <h2>Student Dashboard</h2>
+
+
+  <div class="stats-container">
+
+    <div class="stat-card">
+      <h3 id="upcomingCount">0</h3>
+      <p>Upcoming Events</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 id="totalEvents">0</h3>
+      <p>Total Events</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 id="registeredCount">0</h3>
+      <p>Registered</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 id="attendanceCount">0</h3>
+      <p>Attended</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 id="attendancePercent">0%</h3>
+      <p>Attendance %</p>
+    </div>
+
+    <div class="stat-card">
+      <h3 id="missedCount">0</h3>
+      <p>Missed Events</p>
+    </div>
+
+  </div>
+
+
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search events by title..." oninput="handleSearch()">
+  </div>
+
+
+  <div class="filter-container">
+    <button class="filter-btn active" onclick="filterEvents('All', this)">All</button>
+    <button class="filter-btn" onclick="filterEvents('Tech', this)">Tech</button>
+    <button class="filter-btn" onclick="filterEvents('Non-Tech', this)">Non-Tech</button>
+    <button class="filter-btn" onclick="filterEvents('Yugantar', this)">Yugantar</button>
+    <button class="filter-btn" onclick="filterEvents('Gyanotsav', this)">Gyanotsav</button>
+    <button class="filter-btn" onclick="filterEvents('Sports', this)">Sports</button>
+  </div>
+
+
+  <div id="eventList"></div>
+
+
+  <!-- UNREGISTER CONFIRM MODAL -->
+  <div class="modal-overlay" id="unregisterOverlay">
+    <div class="modal-box">
+
+      <div class="modal-icon-strip">
+        <div class="modal-icon-wrap warning">↩</div>
+        <div class="modal-titles">
+          <h3>Cancel Registration?</h3>
+          <p>This action cannot be undone</p>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-message" id="unregisterMessage"></div>
+        <div class="modal-footer">
+          <button class="modal-btn modal-cancel" onclick="closeUnregisterModal()">Keep it</button>
+          <button class="modal-btn modal-confirm-danger" id="unregisterConfirmBtn" onclick="confirmUnregister()">Yes, cancel</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <script src="../public/js/dashboard.js"></script>
+
+  <div id="toast" class="toast"></div>
+
+</body>
+
+</html>

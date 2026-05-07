@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Event Details</title>
+  <link rel="stylesheet" href="../public/css/components.css">
+  <link rel="stylesheet" href="../public/css/event-details.css">
+</head>
+
+<body class="page-enter">
+
+  <div class="topbar">
+    <div class="logo">Event Attendance Tracker</div>
+    <div class="top-actions">
+      <button class="logout-btn" onclick="goBack()">← Back to Dashboard</button>
+    </div>
+  </div>
+
+
+  <div class="event-container">
+
+    <!-- BANNER IMAGE — visible only when event has an image -->
+    <div class="event-banner" id="eventBanner" style="display:none">
+      <img id="bannerImg" src="" alt="Event Banner">
+    </div>
+
+    <h1 id="title"></h1>
+
+    <div class="event-meta">
+      <p><strong>Category:</strong> <span id="category"></span></p>
+      <p><strong>Date:</strong>     <span id="date"></span></p>
+      <p><strong>Venue:</strong>    <span id="venue"></span></p>
+    </div>
+
+    <div class="event-description">
+      <h3>Description</h3>
+      <p id="description"></p>
+    </div>
+
+    <div class="event-actions">
+      <button class="primary-btn" onclick="registerEvent()">
+        Register for Event
+      </button>
+    </div>
+
+  </div>
+
+
+  <div id="toast" class="toast"></div>
+
+  <script src="../public/js/events.js"></script>
+
+</body>
+
+</html>

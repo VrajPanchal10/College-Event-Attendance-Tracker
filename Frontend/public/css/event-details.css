@@ -1,0 +1,127 @@
+/* ══════════════════════════════════════════════════
+   event-details.css
+   Only for event-details.html
+   Load AFTER components.css
+   ══════════════════════════════════════════════════ */
+
+.event-container {
+  max-width: 760px;
+  margin: 40px auto;
+  padding: 0 24px 60px;
+}
+
+/* ══════════════════════════════════════════════════
+   BANNER IMAGE
+   Full-width, prominent, with subtle hover zoom
+   Hidden by default — events.js shows it when
+   event.imageUrl exists
+   ══════════════════════════════════════════════════ */
+.event-banner {
+  width: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  margin-bottom: 32px;
+  box-shadow: 0 8px 32px rgba(30, 41, 59, 0.16);
+  background: #e2e8f0;
+  aspect-ratio: 16 / 6;
+}
+
+.event-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #0f172a;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.event-banner img:hover {
+  transform: scale(1.02);
+}
+
+/* ══════════════════════════════════════════════════
+   EVENT TITLE
+   ══════════════════════════════════════════════════ */
+.event-container h1 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #1e293b;
+  letter-spacing: -0.03em;
+  margin-bottom: 8px;
+  line-height: 1.25;
+}
+
+.event-container h1::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 3px;
+  background: linear-gradient(135deg, #7c3aed, #2563eb);
+  border-radius: 2px;
+  margin-top: 12px;
+}
+
+/* ══════════════════════════════════════════════════
+   EVENT META
+   ══════════════════════════════════════════════════ */
+.event-meta {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 24px 28px;
+  margin-top: 28px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 10px rgba(30, 41, 59, 0.06);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 32px;
+}
+
+.event-meta p        { font-size: 0.88rem; color: #475569; line-height: 1.6; }
+.event-meta p strong { color: #1e293b; font-weight: 600; }
+.event-meta span     { color: #2563eb; font-weight: 500; }
+
+/* ══════════════════════════════════════════════════
+   EVENT DESCRIPTION
+   ══════════════════════════════════════════════════ */
+.event-description {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 24px 28px;
+  margin-top: 20px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 10px rgba(30, 41, 59, 0.06);
+}
+
+.event-description h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.event-description p {
+  font-size: 0.88rem;
+  color: #64748b;
+  line-height: 1.8;
+}
+
+/* ══════════════════════════════════════════════════
+   EVENT ACTIONS
+   ══════════════════════════════════════════════════ */
+.event-actions {
+  margin-top: 28px;
+  display: flex;
+  gap: 12px;
+}
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .event-container   { margin: 16px auto; padding: 0 16px 40px; }
+  .event-banner      { border-radius: 12px; aspect-ratio: 16 / 7; }
+  .event-container h1{ font-size: 1.5rem; }
+  .event-meta        { grid-template-columns: 1fr; gap: 10px; }
+}

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>My Profile</title>
+  <link rel="stylesheet" href="../public/css/components.css">
+  <link rel="stylesheet" href="../public/css/profile.css">
+</head>
+
+<body class="page-enter">
+
+  <div class="topbar">
+    <div class="logo">Event Attendance Tracker</div>
+    <div class="top-actions">
+      <span class="role-badge" id="topbarRole">Student</span>
+      <a href="#" id="backLink" class="nav-link">← Back</a>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+
+  <div class="profile-wrapper">
+
+    <!-- Header Card -->
+    <div class="profile-header-card">
+      <div class="avatar" id="avatarInitial">?</div>
+      <div class="profile-info">
+        <h2 id="profileName">Loading...</h2>
+        <p id="profileEmail">Loading...</p>
+        <span class="profile-role-badge" id="profileRole">—</span>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="profile-stats" id="profileStats">
+      <div class="profile-stat">
+        <h3 id="stat1">—</h3>
+        <p id="stat1Label">—</p>
+      </div>
+      <div class="profile-stat">
+        <h3 id="stat2">—</h3>
+        <p id="stat2Label">—</p>
+      </div>
+      <div class="profile-stat">
+        <h3 id="stat3">—</h3>
+        <p id="stat3Label">—</p>
+      </div>
+    </div>
+
+    <!-- Account Info -->
+    <div class="profile-card">
+      <h3>Account Information</h3>
+      <div class="info-row">
+        <div class="info-icon">👤</div>
+        <div>
+          <div class="info-label">Full Name</div>
+          <div class="info-value" id="infoName">—</div>
+        </div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon">📧</div>
+        <div>
+          <div class="info-label">Email</div>
+          <div class="info-value" id="infoEmail">—</div>
+        </div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon">🎓</div>
+        <div>
+          <div class="info-label">Role</div>
+          <div class="info-value" id="infoRole">—</div>
+        </div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon">📅</div>
+        <div>
+          <div class="info-label">Member Since</div>
+          <div class="info-value" id="infoJoined">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Change Password -->
+    <div class="profile-card">
+      <h3>Change Password</h3>
+
+      <div class="pwd-field" id="f-currentPassword">
+        <label>Current Password <span class="required">*</span></label>
+        <input type="password" id="currentPassword" placeholder="Enter current password"
+               oninput="clearPwdError()">
+        <span class="error-msg">⚠ Current password is required</span>
+      </div>
+
+      <!-- New Password — with floating popover -->
+      <div class="pwd-field" id="f-newPassword">
+        <label>New Password <span class="required">*</span></label>
+
+        <div class="pwd-popover-wrap">
+          <input
+            type="password"
+            id="newPassword"
+            placeholder="Create a strong password"
+            autocomplete="new-password"
+            oninput="validateNewPassword(this.value)"
+            onfocus="showProfilePop()"
+            onblur="hideProfilePop()"
+          >
+          <button type="button" class="eye-toggle-profile" id="profileEyeBtn" onclick="toggleProfileEye()">&#128065;</button>
+
+          <!-- FLOATING POPOVER -->
+          <div class="pwd-popover" id="profilePop">
+            <div class="pop-title">Password requirements</div>
+            <div class="prog-list">
+              <div class="prog-row">
+                <div class="prog-label" id="ppl-len">Min 6 characters</div>
+                <div class="prog-track"><div class="prog-fill" id="ppf-len"></div></div>
+                <div class="prog-check" id="ppc-len">&#10003;</div>
+              </div>
+              <div class="prog-row">
+                <div class="prog-label" id="ppl-upper">Uppercase (A–Z)</div>
+                <div class="prog-track"><div class="prog-fill" id="ppf-upper"></div></div>
+                <div class="prog-check" id="ppc-upper">&#10003;</div>
+              </div>
+              <div class="prog-row">
+                <div class="prog-label" id="ppl-lower">Lowercase (a–z)</div>
+                <div class="prog-track"><div class="prog-fill" id="ppf-lower"></div></div>
+                <div class="prog-check" id="ppc-lower">&#10003;</div>
+              </div>
+              <div class="prog-row">
+                <div class="prog-label" id="ppl-num">Number (0–9)</div>
+                <div class="prog-track"><div class="prog-fill" id="ppf-num"></div></div>
+                <div class="prog-check" id="ppc-num">&#10003;</div>
+              </div>
+              <div class="prog-row">
+                <div class="prog-label" id="ppl-special">Symbol (!@#$%)</div>
+                <div class="prog-track"><div class="prog-fill" id="ppf-special"></div></div>
+                <div class="prog-check" id="ppc-special">&#10003;</div>
+              </div>
+            </div>
+            <div class="overall-bar">
+              <div class="overall-fill" id="pOverallFill"></div>
+            </div>
+            <div class="overall-row">
+              <span class="overall-txt" id="pOverallTxt">Start typing</span>
+              <span class="overall-txt" id="pOverallCount">0 / 5</span>
+            </div>
+          </div>
+        </div>
+
+        <span class="error-msg">⚠ Password does not meet requirements</span>
+        <span class="valid-msg">✔ Strong password!</span>
+      </div>
+
+      <div class="pwd-field" id="f-confirmPassword">
+        <label>Confirm New Password <span class="required">*</span></label>
+        <input type="password" id="confirmPassword" placeholder="Repeat new password"
+               oninput="validateConfirmPassword()">
+        <span class="error-msg">⚠ Passwords do not match</span>
+        <span class="valid-msg">✔ Passwords match!</span>
+      </div>
+
+      <button class="primary-btn" onclick="changePassword()">
+        Update Password
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div id="toast" class="toast"></div>
+
+  <script src="../public/js/profile.js"></script>
+
+</body>
+
+</html>

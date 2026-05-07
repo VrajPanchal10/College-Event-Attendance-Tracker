@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Event Calendar</title>
+  <link rel="stylesheet" href="../public/css/components.css">
+  <link rel="stylesheet" href="../public/css/calendar.css">
+</head>
+
+<body class="page-enter">
+
+  <div class="topbar">
+    <div class="logo">Event Attendance Tracker</div>
+    <div class="top-actions">
+      <a href="student-dashboard.html" class="nav-link">Dashboard</a>
+      <span class="nav-link active">Calendar</span>
+      <a href="attendance.html" class="nav-link">My Attendance</a>
+      <a href="profile.html" class="nav-link">Profile</a>
+      <span class="role-badge">Student</span>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+
+  <div class="calendar-wrapper">
+
+    <div class="cal-page-header">
+      <div>
+        <h2>Event Calendar</h2>
+        <p>View all college events by month. Outlined chips = you're registered.</p>
+      </div>
+      <div class="cal-legend">
+        <div class="legend-item"><span class="legend-dot dot-tech"></span> Tech</div>
+        <div class="legend-item"><span class="legend-dot dot-nontech"></span> Non-Tech</div>
+        <div class="legend-item"><span class="legend-dot dot-sports"></span> Sports</div>
+        <div class="legend-item"><span class="legend-dot dot-cultural"></span> Yugantar</div>
+        <div class="legend-item"><span class="legend-dot dot-other"></span> Gyanotsav</div>
+      </div>
+    </div>
+
+
+    <div class="calendar-card">
+
+      <!-- Month navigation -->
+      <div class="cal-header">
+        <div class="cal-nav-group">
+          <button class="cal-nav-btn" onclick="changeMonth(-1)">&#8249;</button>
+          <button class="cal-nav-btn" onclick="changeMonth(1)">&#8250;</button>
+        </div>
+        <span class="cal-month-title" id="calMonthTitle">Loading...</span>
+        <button class="cal-today-btn" onclick="goToToday()">Today</button>
+      </div>
+
+      <!-- Day of week header -->
+      <div class="cal-dow-row">
+        <div class="cal-dow">Sun</div>
+        <div class="cal-dow">Mon</div>
+        <div class="cal-dow">Tue</div>
+        <div class="cal-dow">Wed</div>
+        <div class="cal-dow">Thu</div>
+        <div class="cal-dow">Fri</div>
+        <div class="cal-dow">Sat</div>
+      </div>
+
+      <!-- Day cells injected by JS -->
+      <div class="cal-grid" id="calGrid"></div>
+
+    </div>
+
+
+    <!-- Event detail panel — shown when a day with events is clicked -->
+    <div class="detail-panel" id="detailPanel" style="display:none">
+      <div class="detail-header">
+        <h3 id="detailTitle">Events</h3>
+        <button class="detail-close" onclick="closeDetail()">✕</button>
+      </div>
+      <div class="detail-body" id="detailBody"></div>
+    </div>
+
+  </div>
+
+
+  <div id="toast" class="toast"></div>
+
+  <script src="../public/js/calendar.js"></script>
+
+</body>
+
+</html>

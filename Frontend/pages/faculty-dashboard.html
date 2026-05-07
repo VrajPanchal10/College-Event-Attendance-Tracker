@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Faculty Dashboard</title>
+  <link rel="stylesheet" href="../public/css/components.css">
+  <link rel="stylesheet" href="../public/css/faculty-dashboard.css">
+</head>
+
+<body class="page-enter">
+
+  <div class="topbar">
+    <div class="logo">College Event Attendance Tracker</div>
+    <div class="top-actions">
+      <span class="nav-link active">Dashboard</span>
+      <a href="analytics.html" class="nav-link">Analytics</a>
+      <a href="profile.html" class="nav-link" id="profileLink">Profile</a>
+      <span class="role-badge">Faculty</span>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+
+  <div class="dashboard">
+
+    <h2>Faculty Dashboard</h2>
+
+    <div class="stats-container">
+      <div class="stat-card">
+        <h3 id="eventsCreated">0</h3>
+        <p>Events Created</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="totalRegistrations">0</h3>
+        <p>Total Registrations</p>
+      </div>
+    </div>
+
+
+    <div class="create-section">
+      <h2>Create New Event</h2>
+
+      <form id="eventForm" onsubmit="return false;">
+
+      <div class="form-group">
+
+        <div class="field full" id="f-title">
+          <label>Event Title <span class="required">*</span></label>
+          <input id="title" placeholder="e.g. HackSprint 2026" maxlength="80"
+                 oninput="validateTitle()" onblur="validateTitle()">
+          <span class="char-counter" id="title-counter">0 / 80</span>
+          <span class="error-msg">⚠ Title must be at least 3 characters</span>
+          <span class="valid-msg">✔ Looks good!</span>
+        </div>
+
+        <div class="field" id="f-category">
+          <label>Category <span class="required">*</span></label>
+          <select id="category" onchange="validateCategory()" onblur="validateCategory()">
+            <option value="">Select category...</option>
+            <option>Tech</option>
+            <option>Non-Tech</option>
+            <option>Yugantar</option>
+            <option>Gyanotsav</option>
+            <option>Sports</option>
+          </select>
+          <span class="error-msg">⚠ Please select a category</span>
+          <span class="valid-msg">✔ Looks good!</span>
+        </div>
+
+        <div class="field" id="f-date">
+          <label>Event Date</label>
+          <input id="date" type="date"
+                 onchange="validateDate()" onblur="validateDate()">
+          <span class="error-msg">⚠ Date cannot be in the past</span>
+          <span class="valid-msg">✔ Valid date!</span>
+        </div>
+
+        <div class="field full" id="f-venue">
+          <label>Venue</label>
+          <input id="venue" placeholder="e.g. CS Lab, Block A" maxlength="100"
+                 oninput="validateVenue()" onblur="validateVenue()">
+          <span class="error-msg">⚠ Venue cannot exceed 100 characters</span>
+          <span class="valid-msg">✔ Looks good!</span>
+        </div>
+
+        <div class="field full" id="f-description">
+          <label>Description</label>
+          <textarea id="description" placeholder="Describe the event..." maxlength="500"
+                    oninput="validateDescription()"></textarea>
+          <span class="char-counter" id="desc-counter">0 / 500</span>
+          <span class="error-msg">⚠ Description cannot exceed 500 characters</span>
+        </div>
+
+        <!-- ── NEW: Banner Image Upload ── -->
+        <div class="field full" id="f-image">
+          <label>
+            Banner Image
+            <span class="field-hint">optional · JPG, PNG or WebP · max 2 MB</span>
+          </label>
+
+          <div class="image-upload-area" id="imageUploadArea">
+            <!-- Hidden file input -->
+            <input
+              type="file"
+              id="eventImage"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
+              style="display:none"
+              onchange="previewImage(this)"
+            >
+
+            <!-- Placeholder shown before upload -->
+            <div class="upload-placeholder" id="uploadPlaceholder"
+                 onclick="document.getElementById('eventImage').click()">
+              <span class="upload-icon">🖼</span>
+              <span class="upload-text">Click to upload banner image</span>
+              <span class="upload-hint-small">Recommended: 1200 × 400 px</span>
+            </div>
+
+            <!-- Preview shown after file selected or when editing -->
+            <img id="imagePreview" class="image-preview-thumb"
+                 style="display:none" alt="Banner preview"
+                 onclick="document.getElementById('eventImage').click()">
+          </div>
+
+          <button type="button" class="remove-image-btn" id="removeImageBtn"
+                  onclick="removeImage()" style="display:none">
+            ✕ Remove Image
+          </button>
+        </div>
+        <!-- ── End Banner Image ── -->
+
+      </div>
+
+      <div class="form-footer">
+        <button id="createBtn" class="primary-btn">Create Event</button>
+        <span class="form-hint">* Required fields</span>
+      </div>
+
+      </form>
+    </div>
+
+    <div class="events-section">
+      <h2>All Events</h2>
+
+      <div class="search-container">
+        <input type="text" id="facultySearch" placeholder="Search events by title..."
+               oninput="handleFacultySearch()">
+      </div>
+
+      <div class="filter-container">
+        <button class="filter-btn active" onclick="filterFacultyEvents('All', this)">All</button>
+        <button class="filter-btn" onclick="filterFacultyEvents('Tech', this)">Tech</button>
+        <button class="filter-btn" onclick="filterFacultyEvents('Non-Tech', this)">Non-Tech</button>
+        <button class="filter-btn" onclick="filterFacultyEvents('Yugantar', this)">Yugantar</button>
+        <button class="filter-btn" onclick="filterFacultyEvents('Gyanotsav', this)">Gyanotsav</button>
+        <button class="filter-btn" onclick="filterFacultyEvents('Sports', this)">Sports</button>
+      </div>
+
+      <div id="eventList" class="event-grid"></div>
+    </div>
+
+  </div>
+
+
+  <button class="reset-btn" id="resetBtn">
+    Clear All Records
+  </button>
+
+
+  <!-- CUSTOM CONFIRM MODAL -->
+  <div class="modal-overlay" id="confirmOverlay">
+    <div class="modal-box">
+      <div class="modal-icon-strip">
+        <div class="modal-icon-wrap" id="modalIconWrap">🗑️</div>
+        <div class="modal-titles">
+          <h3 id="modalTitle">Confirm Action</h3>
+          <p id="modalSubtitle">This action cannot be undone</p>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-message" id="modalMessage"></div>
+        <div class="modal-footer">
+          <button class="modal-btn modal-cancel" id="modalCancelBtn">Cancel</button>
+          <button class="modal-btn" id="modalConfirmBtn">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="../public/js/faculty.js"></script>
+
+  <div id="toast" class="toast"></div>
+
+</body>
+
+</html>

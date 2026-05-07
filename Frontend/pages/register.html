@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Create Account</title>
+  <link rel="stylesheet" href="../public/css/register_style.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Create Account</h1>
+
+    <form onsubmit="register(event)">
+
+      <div class="input-group">
+        <label>Full Name</label>
+        <input type="text" id="name" placeholder="Enter your full name" required>
+      </div>
+
+      <div class="input-group">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="Enter your email" required>
+      </div>
+
+      <div class="input-group">
+        <label>Password</label>
+        <div class="pwd-wrap">
+          <input
+            type="password"
+            id="password"
+            placeholder="Create a strong password"
+            required
+            autocomplete="new-password"
+            oninput="checkRegisterPwd(this.value)"
+            onfocus="showRegisterPop()"
+            onblur="hideRegisterPop()"
+          >
+          <button type="button" class="eye-toggle" id="regEyeBtn" onclick="toggleRegisterEye()">&#128065;</button>
+
+          <!-- FLOATING POPOVER -->
+          <div class="pwd-popover" id="registerPop">
+            <div class="pop-title">Password requirements</div>
+            <div class="prog-list">
+              <div class="prog-row">
+                <div class="prog-label" id="rpl-len">Min 6 characters</div>
+                <div class="prog-track"><div class="prog-fill" id="rpf-len"></div></div>
+                <div class="prog-check" id="rpc-len">&#10003;</div>
+              </div>
+              <div class="prog-row">
+                <div class="prog-label" id="rpl-upper">Uppercase (A–Z)</div>
+                <div class="prog-track"><div class="prog-fill" id="rpf-upper"></div></div>
+                <div class="prog-check" id="rpc-upper">&#10003;</div>
+              </div>
+              <div class="prog-row">
+                <div class="prog-label" id="rpl-lower">Lowercase (a–z)</div>
+                <div class="prog-track"><div class="prog-fill" id="rpf-lower"></div></div>
+                <div class="prog-check" id="rpc-lower">&#10003;</div>
+              </div>
+              <div class="prog-row">
+                <div class="prog-label" id="rpl-num">Number (0–9)</div>
+                <div class="prog-track"><div class="prog-fill" id="rpf-num"></div></div>
+                <div class="prog-check" id="rpc-num">&#10003;</div>
+              </div>
+              <div class="prog-row">
+                <div class="prog-label" id="rpl-special">Symbol (!@#$%)</div>
+                <div class="prog-track"><div class="prog-fill" id="rpf-special"></div></div>
+                <div class="prog-check" id="rpc-special">&#10003;</div>
+              </div>
+            </div>
+            <div class="overall-bar">
+              <div class="overall-fill" id="rOverallFill"></div>
+            </div>
+            <div class="overall-row">
+              <span class="overall-txt" id="rOverallTxt">Start typing</span>
+              <span class="overall-txt" id="rOverallCount">0 / 5</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Role</label>
+        <select id="role" required>
+          <option value="student">Student</option>
+          <option value="faculty">Faculty</option>
+        </select>
+      </div>
+
+      <button type="submit" id="registerBtn" disabled>Register</button>
+
+    </form>
+
+    <div class="login-link">
+      Already have an account?
+      <a href="login.html">Login</a>
+    </div>
+  </div>
+
+  <script src="../public/js/auth.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>My Attendance</title>
+  <link rel="stylesheet" href="../public/css/components.css">
+  <link rel="stylesheet" href="../public/css/attendance.css">
+</head>
+
+<body class="page-enter">
+
+  <div class="topbar">
+
+    <div class="logo">Event Attendance Tracker</div>
+
+    <div class="top-actions">
+      <span class="role-badge">Student</span>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+  </div>
+
+
+  <div class="attendance-wrapper">
+
+    <h2>My Attendance</h2>
+
+    <div class="attendance-stats">
+
+      <div class="stat-card">
+        <h3 id="totalAttended">0</h3>
+        <p>Events Attended</p>
+      </div>
+
+    </div>
+
+
+    <div class="attendance-table-container">
+
+      <table class="attendance-table">
+
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Event Title</th>
+            <th>Category</th>
+            <th>Date Attended</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody id="attendanceBody">
+        </tbody>
+
+      </table>
+
+      <div id="emptyState" class="empty-state" style="display:none;">
+        <p>No attendance records found.</p>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <script src="../public/js/attendance.js"></script>
+
+</body>
+
+</html>

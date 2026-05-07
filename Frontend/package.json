@@ -1,0 +1,16 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "College Event Attendance Tracker Frontend",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve -s . -l 3000",
+    "dev": "serve -s . -l 3000 -o"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}
