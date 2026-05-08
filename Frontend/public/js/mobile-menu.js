@@ -39,7 +39,9 @@
     // Close when any nav link inside mobile-nav is clicked
     mobileNav.querySelectorAll('a, button').forEach(function (el) {
       el.addEventListener('click', function () {
-        closeMenu(topbar, hamburger);
+        setTimeout(function() {
+          closeMenu(topbar, hamburger);
+        }, 150);
       });
     });
 

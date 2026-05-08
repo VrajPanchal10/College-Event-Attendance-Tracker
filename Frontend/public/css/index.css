@@ -167,8 +167,10 @@ body::after {
   flex: 1;
   min-width: 0;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+.logo-short {
+  display: none;
 }
 
 .nav-actions {
@@ -422,6 +424,12 @@ body::after {
   .hero-buttons .btn {
     width: 100%;
     flex: 1 1 100%;
+  }
+  .logo-full {
+    display: none;
+  }
+  .logo-short {
+    display: inline;
   }
   body::before { border-width: 0 180px 160px 0; }
   body::after  { border-width: 140px 0 0 160px; }
