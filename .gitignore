@@ -143,3 +143,10 @@ vite.config.ts.timestamp-*
 .vite/
 
 Backend/uploads/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code settings (optional)
+.vscode/
