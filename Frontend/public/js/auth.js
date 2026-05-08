@@ -1,19 +1,19 @@
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://college-event-attendance-tracker.onrender.com/api";
 
 
 // ===============================
 // PASSWORD STRENGTH — REGISTER
 // ===============================
-const PWD_KEYS   = ['len', 'upper', 'lower', 'num', 'special'];
+const PWD_KEYS = ['len', 'upper', 'lower', 'num', 'special'];
 const PWD_LABELS = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
 const PWD_COLORS = ['', '#ef4444', '#f59e0b', '#3b82f6', '#2563eb', '#16a34a'];
 
 function getPwdRules(v) {
   return {
-    len:     v.length >= 6,
-    upper:   /[A-Z]/.test(v),
-    lower:   /[a-z]/.test(v),
-    num:     /[0-9]/.test(v),
+    len: v.length >= 6,
+    upper: /[A-Z]/.test(v),
+    lower: /[a-z]/.test(v),
+    num: /[0-9]/.test(v),
     special: /[!@#$%^&*()\-_=+\[\]{};':"\\|,.<>/?]/.test(v)
   };
 }
@@ -31,24 +31,24 @@ function hideRegisterPop() {
 }
 
 function checkRegisterPwd(v) {
-  const r      = getPwdRules(v);
+  const r = getPwdRules(v);
   const passed = PWD_KEYS.filter(k => r[k]).length;
 
   PWD_KEYS.forEach(k => {
     const label = document.getElementById('rpl-' + k);
-    const fill  = document.getElementById('rpf-' + k);
+    const fill = document.getElementById('rpf-' + k);
     const check = document.getElementById('rpc-' + k);
     if (label) label.classList.toggle('pass', r[k]);
-    if (fill)  fill.classList.toggle('pass',  r[k]);
+    if (fill) fill.classList.toggle('pass', r[k]);
     if (check) check.classList.toggle('pass', r[k]);
   });
 
-  const overallFill  = document.getElementById('rOverallFill');
-  const overallTxt   = document.getElementById('rOverallTxt');
+  const overallFill = document.getElementById('rOverallFill');
+  const overallTxt = document.getElementById('rOverallTxt');
   const overallCount = document.getElementById('rOverallCount');
 
   if (overallFill) {
-    overallFill.style.width      = (passed / 5 * 100) + '%';
+    overallFill.style.width = (passed / 5 * 100) + '%';
     overallFill.style.background = PWD_COLORS[passed] || '#e2e8f0';
   }
   if (overallTxt) {
@@ -68,8 +68,8 @@ function toggleRegisterEye() {
   const inp = document.getElementById('password');
   const btn = document.getElementById('regEyeBtn');
   if (!inp) return;
-  if (inp.type === 'password') { inp.type = 'text';     if (btn) btn.innerHTML = '&#128064;'; }
-  else                         { inp.type = 'password'; if (btn) btn.innerHTML = '&#128065;'; }
+  if (inp.type === 'password') { inp.type = 'text'; if (btn) btn.innerHTML = '&#128064;'; }
+  else { inp.type = 'password'; if (btn) btn.innerHTML = '&#128065;'; }
 }
 
 
@@ -79,31 +79,31 @@ function toggleRegisterEye() {
 async function login(event) {
   event.preventDefault();
 
-  const email    = document.getElementById("email").value;
+  const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
-  const role     = document.getElementById("role").value;
+  const role = document.getElementById("role").value;
 
   // Fix #4: Show loading state on button
   const btn = document.getElementById("loginBtn");
   const originalText = btn ? btn.innerHTML : "";
   if (btn) {
     btn.innerHTML = "Signing in...";
-    btn.disabled  = true;
+    btn.disabled = true;
   }
 
   try {
-    const res  = await fetch(`${API_URL}/auth/login`, {
-      method:  "POST",
+    const res = await fetch(`${API_URL}/auth/login`, {
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ email, password, role })
+      body: JSON.stringify({ email, password, role })
     });
 
     const data = await res.json();
 
     if (data.token) {
       localStorage.setItem("token", data.token);
-      localStorage.setItem("role",  data.role);
-      localStorage.setItem("name",  data.name);
+      localStorage.setItem("role", data.role);
+      localStorage.setItem("name", data.name);
       localStorage.setItem("email", data.email);
 
       if (data.role === "student") {
@@ -132,13 +132,13 @@ async function login(event) {
 async function register(event) {
   event.preventDefault();
 
-  const name     = document.getElementById("name").value.trim();
-  const email    = document.getElementById("email").value.trim();
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
-  const role     = document.getElementById("role").value;
+  const role = document.getElementById("role").value;
 
   // Frontend password strength check
-  const rules  = getPasswordRules(password);
+  const rules = getPasswordRules(password);
   const allPass = Object.values(rules).every(Boolean);
 
   if (!allPass) {
@@ -153,14 +153,14 @@ async function register(event) {
   const originalText = btn ? btn.innerHTML : "";
   if (btn) {
     btn.innerHTML = "Creating account...";
-    btn.disabled  = true;
+    btn.disabled = true;
   }
 
   try {
-    const res  = await fetch(`${API_URL}/auth/register`, {
-      method:  "POST",
+    const res = await fetch(`${API_URL}/auth/register`, {
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ name, email, password, role })
+      body: JSON.stringify({ name, email, password, role })
     });
 
     const data = await res.json();
@@ -194,7 +194,13 @@ function showAuthError(msg) {
     el.className = "auth-msg auth-msg-error";
     // Insert before the first button or at end of form
     const form = document.querySelector("form");
-    if (form) form.insertBefore(el, form.querySelector("button[type='submit']"));
+    const submitBtn = form.querySelector("button[type='submit']");
+
+    if (submitBtn) {
+      form.insertBefore(el, submitBtn);
+    } else {
+      form.appendChild(el);
+    }
   }
   el.className = "auth-msg auth-msg-error";
   el.textContent = msg;
@@ -210,7 +216,13 @@ function showAuthSuccess(msg) {
     el = document.createElement("div");
     el.id = "authMsg";
     const form = document.querySelector("form");
-    if (form) form.insertBefore(el, form.querySelector("button[type='submit']"));
+    const submitBtn = form.querySelector("button[type='submit']");
+
+    if (submitBtn) {
+      form.insertBefore(el, submitBtn);
+    } else {
+      form.appendChild(el);
+    }
   }
   el.className = "auth-msg auth-msg-success";
   el.textContent = msg;
@@ -223,10 +235,10 @@ function showAuthSuccess(msg) {
 // ===============================
 function getPasswordRules(val) {
   return {
-    len:     val.length >= 6,
-    upper:   /[A-Z]/.test(val),
-    lower:   /[a-z]/.test(val),
-    num:     /[0-9]/.test(val),
+    len: val.length >= 6,
+    upper: /[A-Z]/.test(val),
+    lower: /[a-z]/.test(val),
+    num: /[0-9]/.test(val),
     special: /[!@#$%^&*()\-_=+\[\]{};':"\\|,.<>/?]/.test(val)
   };
 }
@@ -237,10 +249,10 @@ function getPasswordRules(val) {
 // ===============================
 const STRENGTH_LABELS = ["", "Weak", "Fair", "Good", "Strong", "Very Strong"];
 const STRENGTH_COLORS = ["", "#ef4444", "#f59e0b", "#3b82f6", "#2563eb", "#16a34a"];
-const RULE_KEYS       = ["len", "upper", "lower", "num", "special"];
+const RULE_KEYS = ["len", "upper", "lower", "num", "special"];
 
 function checkPasswordStrength(val) {
-  const rules  = getPasswordRules(val);
+  const rules = getPasswordRules(val);
   const passed = RULE_KEYS.filter(k => rules[k]).length;
 
   RULE_KEYS.forEach(k => {
@@ -254,13 +266,13 @@ function checkPasswordStrength(val) {
 
   const fill = document.getElementById("overallFill");
   if (fill) {
-    fill.style.width      = (passed / 5 * 100) + "%";
+    fill.style.width = (passed / 5 * 100) + "%";
     fill.style.background = STRENGTH_COLORS[passed] || "#e2e8f0";
   }
 
-  const txt   = document.getElementById("overallTxt");
+  const txt = document.getElementById("overallTxt");
   const count = document.getElementById("overallCount");
-  if (txt)   { txt.textContent = passed > 0 ? STRENGTH_LABELS[passed] : "Start typing"; txt.style.color = STRENGTH_COLORS[passed] || "#94a3b8"; }
+  if (txt) { txt.textContent = passed > 0 ? STRENGTH_LABELS[passed] : "Start typing"; txt.style.color = STRENGTH_COLORS[passed] || "#94a3b8"; }
   if (count) { count.textContent = passed + " / 5"; count.style.color = STRENGTH_COLORS[passed] || "#94a3b8"; }
 
   const btn = document.getElementById("registerBtn");
@@ -293,10 +305,10 @@ function toggleEye() {
   if (!inp) return;
 
   if (inp.type === "password") {
-    inp.type      = "text";
+    inp.type = "text";
     if (btn) btn.innerHTML = "&#128064;";
   } else {
-    inp.type      = "password";
+    inp.type = "password";
     if (btn) btn.innerHTML = "&#128065;";
   }
 }

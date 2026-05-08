@@ -28,8 +28,8 @@ function handleMarkAllPresent(eventId) {
 // ===============================
 // GLOBAL VARIABLES
 // ===============================
-const API_URL = "http://localhost:5000/api";
-const BASE_URL = "http://localhost:5000";
+const API_URL = "https://college-event-attendance-tracker.onrender.com/api";
+const BASE_URL = "https://college-event-attendance-tracker.onrender.com/api";
 
 const token = localStorage.getItem("token");
 const role = localStorage.getItem("role");

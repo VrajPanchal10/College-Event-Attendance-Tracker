@@ -3,7 +3,7 @@
 // Fix #1: Removed ~460 lines of dead commented-out code
 // Fix #2: Replaced alert() with silent redirect (window.location.replace)
 // ===============================
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://college-event-attendance-tracker.onrender.com/api";
 
 let token = localStorage.getItem("token");
 const role = localStorage.getItem("role");
