@@ -329,6 +329,7 @@ button[type="submit"]:disabled {
     pointer-events: none;
     transition: opacity 0.22s ease;
     box-shadow: 0 4px 16px rgba(30, 41, 59, 0.12);
+    display: none;
   }
 
   .pwd-popover::before {
@@ -339,6 +340,7 @@ button[type="submit"]:disabled {
     opacity: 1;
     pointer-events: all;
     transform: none;
+    display: block;
   }
 }
 

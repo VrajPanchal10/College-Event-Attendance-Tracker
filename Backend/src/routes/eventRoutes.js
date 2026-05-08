@@ -6,7 +6,8 @@ const {
   getAllEvents,
   getEventById,
   updateEvent,
-  deleteEvent
+  deleteEvent,
+  clearEventRecords
 } = require("../controllers/eventController");
 
 const authMiddleware = require("../middlewares/authMiddleware");
@@ -51,6 +52,14 @@ router.delete(
   authMiddleware,
   roleMiddleware("faculty"),
   deleteEvent
+);
+
+// CLEAR EVENT RECORDS
+router.delete(
+  "/:id/clear-records",
+  authMiddleware,
+  roleMiddleware("faculty"),
+  clearEventRecords
 );
 
 module.exports = router;

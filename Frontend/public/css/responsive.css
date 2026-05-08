@@ -274,18 +274,7 @@ button, a, select, input[type="submit"], input[type="button"], input[type="reset
   border-radius: inherit;
 }
 
-/* ══════════════════════════════════════════════════
-   RESPONSIVE TOAST (override for mobile)
-   ══════════════════════════════════════════════════ */
-@media (max-width: 600px) {
-  .toast {
-    left: 16px !important;
-    right: 16px !important;
-    bottom: 20px !important;
-    width: auto !important;
-    text-align: center;
-  }
-}
+
 
 /* ══════════════════════════════════════════════════
    RESPONSIVE MODAL (override for mobile)
@@ -318,6 +307,12 @@ button, a, select, input[type="submit"], input[type="button"], input[type="reset
     transform: none !important;
     margin-top: 10px;
     box-shadow: 0 4px 16px rgba(30, 41, 59, 0.14);
+    display: none !important;
+  }
+
+  .pwd-popover.show,
+  [class*="pwd-popover"].show {
+    display: block !important;
   }
 
   .pwd-popover::before,

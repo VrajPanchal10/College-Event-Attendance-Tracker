@@ -3,7 +3,8 @@
 // Fix #1: Removed ~460 lines of dead commented-out code
 // Fix #2: Replaced alert() with silent redirect (window.location.replace)
 // ===============================
-const API_URL = "https://college-event-attendance-tracker.onrender.com/api";
+const API_URL  = "https://college-event-attendance-tracker.onrender.com/api";
+const BASE_URL = "https://college-event-attendance-tracker.onrender.com";
 
 let token = localStorage.getItem("token");
 const role = localStorage.getItem("role");
@@ -147,7 +148,7 @@ function applyDashboardData(events, attendanceRecords, registrations) {
   attendedEventIds   = attendanceRecords
     .filter(r => r.eventId)
     .map(r => r.eventId._id || r.eventId);
-  registeredEventIds = registrations.map(r => r.eventId);
+  registeredEventIds = registrations.map(r => r.eventId?._id || r.eventId);
 
   const attendancePercent = registrations.length === 0
     ? 0
@@ -297,10 +298,15 @@ function renderEvents() {
       statusHTML = `<button class="primary-btn" onclick="registerEvent('${sanitize(event._id)}')">Register</button>`;
     }
 
+    const bannerHTML = event.imageUrl
+      ? `<div class="card-banner"><img src="${BASE_URL}${event.imageUrl}" alt="${sanitize(event.title)}"></div>`
+      : "";
+
     // Fix #6: .card-actions class (no inline style)
     // Fix #11: All event data sanitized
     // Fix #15: Card uses flex column structure — .card-actions always at bottom
     div.innerHTML = `
+      ${bannerHTML}
       ${reminderBadge}
       <h3>${sanitize(event.title)}</h3>
       <p><strong>Category:</strong> ${sanitize(event.category)}</p>

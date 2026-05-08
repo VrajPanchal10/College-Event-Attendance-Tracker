@@ -1,5 +1,5 @@
 const API_URL  = "https://college-event-attendance-tracker.onrender.com/api";
-const BASE_URL = "https://college-event-attendance-tracker.onrender.com/api";
+const BASE_URL = "https://college-event-attendance-tracker.onrender.com";
 const token    = localStorage.getItem("token");
 
 if (!token) {
@@ -92,7 +92,12 @@ async function registerEvent() {
 // BACK BUTTON
 // ===============================
 function goBack() {
-  window.location.href = "student-dashboard.html";
+  const role = localStorage.getItem("role");
+  if (role === "faculty") {
+    window.location.href = "faculty-dashboard.html";
+  } else {
+    window.location.href = "student-dashboard.html";
+  }
 }
 
 

@@ -29,7 +29,7 @@ function handleMarkAllPresent(eventId) {
 // GLOBAL VARIABLES
 // ===============================
 const API_URL = "https://college-event-attendance-tracker.onrender.com/api";
-const BASE_URL = "https://college-event-attendance-tracker.onrender.com/api";
+const BASE_URL = "https://college-event-attendance-tracker.onrender.com";
 
 const token = localStorage.getItem("token");
 const role = localStorage.getItem("role");
@@ -58,6 +58,8 @@ let isUpdatingEvent = false; // Flag to prevent duplicate operations
 // Uses FormData so banner image can be uploaded
 // ===============================
 async function createEvent() {
+  if (isUpdatingEvent) return; // Prevent double-submit
+  
   const t = validateTitle();
   const c = validateCategory();
   const d = validateDate();
@@ -68,6 +70,13 @@ async function createEvent() {
     showToast("Please fix the errors before submitting.", "error");
     return;
   }
+
+  const btn = document.getElementById("createBtn");
+  const originalText = btn.innerText;
+  
+  isUpdatingEvent = true;
+  btn.innerText = "Creating...";
+  btn.disabled = true;
 
   const title = document.getElementById("title").value.trim();
   const category = document.getElementById("category").value;
@@ -99,6 +108,10 @@ async function createEvent() {
   } catch (err) {
     console.error("Create Event Error:", err);
     showToast("Failed to create event", "error");
+  } finally {
+    isUpdatingEvent = false;
+    btn.innerText = originalText;
+    btn.disabled = false;
   }
 }
 
@@ -279,20 +292,30 @@ function renderFacultyEvents() {
     const div = document.createElement("div");
     div.classList.add("card", "card-animate");
 
+    // Fix #14: Escape single quotes for onclick handlers
+    const safeId = event._id;
+    const safeTitle = (event.title || "").replace(/'/g, "\\'");
+
+    const bannerHTML = event.imageUrl
+      ? `<div class="card-banner"><img src="${BASE_URL}${event.imageUrl}" alt="${event.title}"></div>`
+      : "";
+
     div.innerHTML = `
+      ${bannerHTML}
       <h3>${event.title}</h3>
       <p><b>Category:</b> ${event.category}</p>
       <p><b>Date:</b> ${event.date ? new Date(event.date).toLocaleDateString() : "TBA"}</p>
       <p><b>Venue:</b> ${event.venue || "Not specified"}</p>
       <p><b>Created By:</b> ${event.createdBy?.name || "Unknown"}</p>
-      <button class="card-btn-view"   onclick="viewRegistrations('${event._id}')">View Registrations</button>
-      <button class="card-btn-edit"   onclick="editEvent('${event._id}')">Edit Event</button>
-      <button class="card-btn-delete" onclick="deleteEvent('${event._id}')">Delete Event</button>
+      <button class="card-btn-view"   onclick="viewRegistrations('${safeId}')">View Registrations</button>
+      <button class="card-btn-edit"   onclick="editEvent('${safeId}')">Edit Event</button>
+      <button class="card-btn-delete" onclick="deleteEvent('${safeId}')">Delete Event</button>
+      <button class="card-btn-clear"  onclick="clearEventRecords('${safeId}')">Clear Records</button>
       <div class="export-divider"></div>
       <div class="export-label">⬇ Export</div>
-      <button class="btn-export btn-export-reg" onclick="exportRegistrations('${event._id}', '${event.title}')">📋 Registrations</button>
-      <button class="btn-export btn-export-att" onclick="exportAttendance('${event._id}', '${event.title}')">✅ Attendance</button>
-      <div id="registrations-${event._id}"></div>
+      <button class="btn-export btn-export-reg" onclick="exportRegistrations('${safeId}', '${safeTitle}')">📋 Registrations</button>
+      <button class="btn-export btn-export-att" onclick="exportAttendance('${safeId}', '${safeTitle}')">✅ Attendance</button>
+      <div id="registrations-${safeId}"></div>
     `;
 
     eventList.appendChild(div);
@@ -592,11 +615,20 @@ function editEvent(eventId) {
 // UPDATE EVENT
 // ===============================
 async function updateEvent(eventId) {
+  if (isUpdatingEvent) return;
+
   const t = validateTitle(), c = validateCategory(), d = validateDate(), v = validateVenue(), desc = validateDescription();
   if (!t || !c || !d || !v || !desc) {
     showToast("Please fix the errors before submitting.", "error");
     return;
   }
+
+  const btn = document.getElementById("createBtn");
+  const originalText = btn.innerText;
+
+  isUpdatingEvent = true;
+  btn.innerText = "Updating...";
+  btn.disabled = true;
 
   const formData = new FormData();
   formData.append("title", document.getElementById("title").value.trim());
@@ -623,7 +655,6 @@ async function updateEvent(eventId) {
       resetForm();
 
       // Reset button to original state
-      const btn = document.getElementById("createBtn");
       btn.innerText = "Create Event";
       btn.onclick = createEvent;
 
@@ -633,6 +664,10 @@ async function updateEvent(eventId) {
   } catch (err) {
     console.error("Update Event Error:", err);
     showToast("Failed to update event", "error");
+  } finally {
+    isUpdatingEvent = false;
+    btn.innerText = btn.innerText === "Update Event" ? "Update Event" : "Create Event";
+    btn.disabled = false;
   }
 }
 
@@ -651,6 +686,36 @@ function deleteEvent(eventId) {
       fetch(`${API_URL}/events/${eventId}`, { method: "DELETE", headers: { Authorization: "Bearer " + token } })
         .then(res => res.json()).then(data => { showToast(data.message); loadEvents(); })
         .catch(() => showToast("Failed to delete event", "error"));
+    }
+  });
+}
+
+
+// ===============================
+// CLEAR EVENT RECORDS (Specific)
+// ===============================
+function clearEventRecords(eventId) {
+  const event = allFacultyEvents.find(e => e._id === eventId);
+  showConfirmModal({
+    type: "warning", icon: "🧹", title: "Clear Event Records",
+    subtitle: "Reset registration & attendance",
+    message: `Are you sure you want to clear <strong>ALL registrations and attendance</strong> for <strong>${event?.title || "this event"}</strong>? The event itself will not be deleted.`,
+    confirmText: "Yes, Clear Records",
+    onConfirm: () => {
+      fetch(`${API_URL}/events/${eventId}/clear-records`, { 
+        method: "DELETE", 
+        headers: { Authorization: "Bearer " + token } 
+      })
+        .then(res => res.json())
+        .then(data => { 
+          showToast(data.message); 
+          // Force refresh registrations panel if it's open
+          if (regCache[eventId]) delete regCache[eventId];
+          const panel = document.getElementById(`registrations-${eventId}`);
+          if (panel && panel.innerHTML !== "") viewRegistrations(eventId);
+          loadEvents(); 
+        })
+        .catch(() => showToast("Failed to clear records", "error"));
     }
   });
 }

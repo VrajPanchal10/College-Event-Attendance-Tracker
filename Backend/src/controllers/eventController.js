@@ -1,4 +1,6 @@
-const Event = require("../models/Event");
+const Event        = require("../models/Event");
+const Registration = require("../models/Registration");
+const Attendance   = require("../models/Attendance");
 
 
 // ===============================
@@ -156,6 +158,32 @@ exports.deleteEvent = async (req, res) => {
 
     res.status(500).json({
       message: "Delete failed",
+      error: error.message
+    });
+
+  }
+
+};
+
+
+// ===============================
+// CLEAR EVENT RECORDS
+// ===============================
+exports.clearEventRecords = async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+    await Registration.deleteMany({ eventId: id });
+    await Attendance.deleteMany({ eventId: id });
+
+    res.json({ message: "All records for this event cleared successfully" });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: "Failed to clear records",
       error: error.message
     });
 

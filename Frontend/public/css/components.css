@@ -151,7 +151,7 @@ img {
   font-weight: 500;
   transition: background 0.2s, transform 0.2s;
   white-space: nowrap;
-  min-height: 36px;
+  min-height: clamp(40px, 6vw, 44px);
   touch-action: manipulation;
 }
 
@@ -161,6 +161,34 @@ img {
 }
 
 .logout-btn:active {
+  transform: translateY(0);
+}
+
+.secondary-btn {
+  background: #64748b;
+  border: none;
+  padding: 8px clamp(12px, 1.5vw, 16px);
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.75rem, 1.6vw, 0.82rem);
+  font-weight: 500;
+  transition: background 0.2s, transform 0.2s;
+  white-space: nowrap;
+  min-height: clamp(40px, 6vw, 44px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+}
+
+.secondary-btn:hover {
+  background: #475569;
+  transform: translateY(-1px);
+}
+
+.secondary-btn:active {
   transform: translateY(0);
 }
 
@@ -179,10 +207,13 @@ img {
   font-family: 'Poppins', sans-serif;
   font-size: clamp(0.82rem, 1.8vw, 0.9rem);
   font-weight: 600;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  white-space: nowrap;
+  min-height: clamp(42px, 6vw, 48px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   touch-action: manipulation;
-  min-height: 40px;
 }
 
 .primary-btn:hover {
@@ -278,6 +309,27 @@ img {
   color: #64748b;
   margin-bottom: 5px;
   line-height: 1.65;
+}
+
+/* ══════════════════════════════════════════════════
+   CARD BANNER (Dashboards)
+   ══════════════════════════════════════════════════ */
+.card-banner {
+  width: calc(100% + (clamp(16px, 2.5vw, 24px) * 2));
+  margin: calc(clamp(16px, 2.5vw, 24px) * -1) calc(clamp(16px, 2.5vw, 24px) * -1) 12px;
+  height: clamp(100px, 15vw, 140px);
+  overflow: hidden;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f1f5f9;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+.card-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 /* ══════════════════════════════════════════════════
@@ -639,6 +691,7 @@ img {
   font-size: clamp(0.8rem, 1.8vw, 0.875rem);
   font-weight: 500;
   opacity: 0;
+  pointer-events: none;
   transform: translateY(12px);
   transition: opacity 0.3s ease, transform 0.3s ease;
   z-index: 999;
@@ -650,6 +703,7 @@ img {
 
 .toast.show {
   opacity: 1;
+  pointer-events: auto;
   transform: translateY(0);
 }
 

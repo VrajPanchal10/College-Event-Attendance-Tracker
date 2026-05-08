@@ -261,9 +261,9 @@
 
 .image-preview-thumb {
   width: 100%;
-  aspect-ratio: 16 / 6;
-  object-fit: contain;
-  background: #f1f5f9;
+  height: auto;
+  max-height: 250px;
+  object-fit: cover;
   display: block;
   cursor: pointer;
   transition: opacity 0.2s;
@@ -299,7 +299,8 @@
    ══════════════════════════════════════════════════ */
 .card-btn-view,
 .card-btn-edit,
-.card-btn-delete {
+.card-btn-delete,
+.card-btn-clear {
   margin-top: 10px;
   margin-right: 6px;
   padding: clamp(6px, 1vw, 8px) clamp(10px, 1.5vw, 14px);
@@ -317,10 +318,12 @@
 .card-btn-view   { background: #dbeafe; color: #1d4ed8; }
 .card-btn-edit   { background: #fef9c3; color: #854d0e; }
 .card-btn-delete { background: #fee2e2; color: #991b1b; }
+.card-btn-clear  { background: #ffedd5; color: #9a3412; }
 
 .card-btn-view:hover   { background: #2563eb; color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37,99,235,0.28); }
 .card-btn-edit:hover   { background: #eab308; color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(234,179,8,0.3); }
 .card-btn-delete:hover { background: #ef4444; color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(239,68,68,0.3); }
+.card-btn-clear:hover  { background: #f97316; color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(249,115,22,0.3); }
 
 /* Fallback for cards not yet re-rendered */
 .card > button:not([class]) {
