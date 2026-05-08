@@ -27,7 +27,7 @@ A full-stack web application for managing college events, student registrations,
 ## 📁 Project Structure
 
 ```
-CLG Event Attendance Tracker/
+College Event Attendance Tracker/
 │
 ├── Backend/
 │   ├── src/
@@ -64,6 +64,7 @@ CLG Event Attendance Tracker/
     ├── pages/
     │   ├── login.html
     │   ├── register.html
+    │   ├── forgot-password.html
     │   ├── student-dashboard.html
     │   ├── faculty-dashboard.html
     │   ├── calendar.html
@@ -83,6 +84,7 @@ CLG Event Attendance Tracker/
     │   │   ├── profile.css
     │   │   ├── LOGIN.css
     │   │   ├── register_style.css
+    │   │   ├── responsive.css         # Global responsive design tokens
     │   │   └── index.css
     │   └── js/
     │       ├── auth.js
@@ -110,6 +112,7 @@ CLG Event Attendance Tracker/
 - View personal attendance records with Present / Absent status
 - Download attendance history
 - Update profile and change password
+- Secure **forgot password flow** with OTP email verification (EmailJS)
 
 ### 🏫 Faculty
 - Create, edit, and delete events with optional **banner image upload**
@@ -138,8 +141,8 @@ CLG Event Attendance Tracker/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/clg-event-attendance-tracker.git
-cd clg-event-attendance-tracker
+git clone https://github.com/yourusername/College-Event-Attendance-Tracker.git
+cd College-Event-Attendance-Tracker
 ```
 
 ### 2. Install backend dependencies
@@ -187,6 +190,8 @@ Open `Frontend/index.html` directly in your browser — or use the Live Server e
 | POST | `/api/auth/login` | Public | Login and get JWT token |
 | GET | `/api/auth/profile` | Auth | Get logged-in user profile |
 | PUT | `/api/auth/change-password` | Auth | Change password |
+| POST | `/api/auth/forgot-password` | Public | Request OTP for password reset |
+| POST | `/api/auth/reset-password` | Public | Reset password with OTP |
 
 ### Events
 | Method | Endpoint | Access | Description |
@@ -252,6 +257,7 @@ Unique index: eventId + studentId (prevents duplicate attendance)
 | `index.html` | Public | Landing page with features overview |
 | `login.html` | Public | Login with role selection |
 | `register.html` | Public | Create new account |
+| `forgot-password.html` | Public | Request OTP and reset password |
 | `student-dashboard.html` | Student | Browse events, register, reminder badges |
 | `calendar.html` | Student | Monthly calendar view of events |
 | `attendance.html` | Student | Personal attendance records table |
