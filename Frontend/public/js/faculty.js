@@ -48,9 +48,10 @@ function logout() {
 // GLOBAL VARIABLES
 // ===============================
 let allFacultyEvents = [];
+let totalRegistrations = 0;
+let regCache = {}; // Cache for student lists: { eventId: { registrations, presentIds } }
 let currentFacultySearch = "";
 let currentFacultyCategory = "All";
-const regCache = {};  // { [eventId]: { registrations, presentIds } }
 let isUpdatingEvent = false; // Flag to prevent duplicate operations
 
 // ===============================
@@ -139,6 +140,29 @@ function removeImage() {
   document.getElementById("removeImageBtn").style.display = "none";
 }
 
+function resetForm() {
+  document.getElementById("eventForm").reset();
+  removeImage();
+  
+  const btn = document.getElementById("createBtn");
+  if (btn) {
+    btn.innerText = "Create Event";
+    btn.onclick = createEvent;
+    btn.disabled = false;
+  }
+  
+  // Clear validation classes
+  document.querySelectorAll(".field").forEach(f => {
+    f.classList.remove("error", "valid");
+  });
+  
+  // Clear counters
+  const titleCounter = document.getElementById("title-counter");
+  if (titleCounter) titleCounter.innerText = "0 / 80";
+  const descCounter = document.getElementById("desc-counter");
+  if (descCounter) descCounter.innerText = "0 / 500";
+}
+
 
 // ===============================
 // VALIDATION FUNCTIONS
@@ -219,8 +243,9 @@ function loadEvents() {
 
   fetch(`${API_URL}/events`, { headers: { Authorization: "Bearer " + token } })
     .then(res => res.json())
-    .then(events => {
+    .then(eventsData => {
       removeFacultyStatsSkeleton();
+      const events = eventsData.events || eventsData;
       allFacultyEvents = events;
 
       if (!events.length) {
@@ -230,12 +255,12 @@ function loadEvents() {
 
       document.getElementById("eventsCreated").innerText = events.length;
 
-      let totalRegistrations = 0;
       events.forEach(event => {
         fetch(`${API_URL}/registrations/${event._id}`, { headers: { Authorization: "Bearer " + token } })
           .then(res => res.json())
           .then(data => {
-            totalRegistrations += data.length;
+            // New structure: data = { registrations, pagination }
+            totalRegistrations += (data.pagination ? data.pagination.total : (data.length || 0));
             document.getElementById("totalRegistrations").innerText = totalRegistrations;
           });
       });
@@ -297,14 +322,14 @@ function renderFacultyEvents() {
     const safeTitle = (event.title || "").replace(/'/g, "\\'");
 
     const bannerHTML = event.imageUrl
-      ? `<div class="card-banner"><img src="${BASE_URL}${event.imageUrl}" alt="${event.title}"></div>`
+      ? `<div class="card-banner"><img src="${BASE_URL}${event.imageUrl}" alt="${event.title}" loading="lazy" width="400" height="200"></div>`
       : "";
 
     div.innerHTML = `
       ${bannerHTML}
       <h3>${event.title}</h3>
       <p><b>Category:</b> ${event.category}</p>
-      <p><b>Date:</b> ${event.date ? new Date(event.date).toLocaleDateString() : "TBA"}</p>
+      <p><b>Date:</b> ${formatDate(event.date)}</p>
       <p><b>Venue:</b> ${event.venue || "Not specified"}</p>
       <p><b>Created By:</b> ${event.createdBy?.name || "Unknown"}</p>
       <button class="card-btn-view"   onclick="viewRegistrations('${safeId}')">View Registrations</button>
@@ -336,9 +361,12 @@ async function viewRegistrations(eventId) {
       fetch(`${API_URL}/attendance/${eventId}`, { headers: { Authorization: "Bearer " + token } })
     ]);
 
-    const registrations = await regRes.json();
+    const regData           = await regRes.json();
     const attendanceRecords = await attRes.json();
-    const presentIds = attendanceRecords.map(a => a.studentId?._id || a.studentId);
+    
+    // Handle new paginated format
+    const registrations = regData.registrations || regData;
+    const presentIds    = attendanceRecords.map(a => a.studentId?._id || a.studentId);
 
     regCache[eventId] = { registrations, presentIds };
 
@@ -514,7 +542,8 @@ async function exportRegistrations(eventId, eventTitle) {
   showToast("Preparing registrations CSV...", "info");
   try {
     const res = await fetch(`${API_URL}/registrations/${eventId}`, { headers: { Authorization: "Bearer " + token } });
-    const regs = await res.json();
+    const data = await res.json();
+    const regs = data.registrations || data;
     if (!regs.length) { showToast("No registrations found", "error"); return; }
     let csv = "Name,Email,Registered Date\n";
     regs.forEach(r => {
@@ -536,8 +565,9 @@ async function exportAttendance(eventId, eventTitle) {
       fetch(`${API_URL}/registrations/${eventId}`, { headers: { Authorization: "Bearer " + token } }),
       fetch(`${API_URL}/attendance/${eventId}`, { headers: { Authorization: "Bearer " + token } })
     ]);
-    const regs = await regRes.json();
-    const atts = await attRes.json();
+    const regData = await regRes.json();
+    const atts    = await attRes.json();
+    const regs    = regData.registrations || regData;
     if (!regs.length) { showToast("No registrations found", "error"); return; }
     const attMap = {};
     atts.forEach(a => { attMap[a.studentId?._id || a.studentId] = a.markedAt || a.createdAt; });
@@ -746,17 +776,25 @@ let _modalOnConfirm = null;
 
 document.addEventListener("DOMContentLoaded", function () {
   loadEvents();
-  document.getElementById("resetBtn").addEventListener("click", resetDemo);
-  document.getElementById("modalCancelBtn").addEventListener("click", closeModal);
-  document.getElementById("modalConfirmBtn").addEventListener("click", function () {
+  
+  const resetBtn = document.getElementById("resetBtn");
+  if (resetBtn) resetBtn.addEventListener("click", resetDemo);
+  
+  const cancelBtn = document.getElementById("modalCancelBtn");
+  if (cancelBtn) cancelBtn.addEventListener("click", closeModal);
+  
+  const confirmBtn = document.getElementById("modalConfirmBtn");
+  if (confirmBtn) confirmBtn.addEventListener("click", function () {
     const fn = _modalOnConfirm; closeModal(); if (fn) fn();
   });
-  document.getElementById("confirmOverlay").addEventListener("click", function (e) {
+  
+  const overlay = document.getElementById("confirmOverlay");
+  if (overlay) overlay.addEventListener("click", function (e) {
     if (e.target === this) closeModal();
   });
 
-  // Set initial onclick for create button
-  document.getElementById("createBtn").onclick = createEvent;
+  const createBtn = document.getElementById("createBtn");
+  if (createBtn) createBtn.onclick = createEvent;
 });
 
 function showConfirmModal(options) {
@@ -790,7 +828,6 @@ function showToast(message, type = "success") {
   toast._timer = setTimeout(() => toast.classList.remove("show"), 3000);
 }
 
-
 // ===============================
 // SKELETON HELPERS
 // ===============================
@@ -805,4 +842,11 @@ function removeFacultyStatsSkeleton() {
 function showFacultyCardsSkeleton() {
   const c = document.getElementById("eventList"); if (!c) return;
   c.innerHTML = Array(4).fill(`<div class="card-skeleton"><div class="skeleton sk-title"></div><div class="skeleton sk-line medium"></div><div class="skeleton sk-line short"></div><div class="sk-actions"><div class="skeleton sk-btn small"></div><div class="skeleton sk-btn small"></div></div></div>`).join("");
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return "TBA";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return "TBA";
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }

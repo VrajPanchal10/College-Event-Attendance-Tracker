@@ -1,10 +1,8 @@
-const User   = require("../models/User");
-const bcrypt = require("bcryptjs");
-const jwt    = require("jsonwebtoken");
-const crypto = require("crypto");
-
-// In-memory reset token store { email: { code, userId, expires } }
-const resetTokens = {};
+const User       = require("../models/User");
+const ResetToken = require("../models/ResetToken");
+const bcrypt     = require("bcryptjs");
+const jwt        = require("jsonwebtoken");
+const crypto     = require("crypto");
 
 // ===============================
 // REGISTER
@@ -128,12 +126,13 @@ exports.forgotPassword = async (req, res) => {
     // Generate 6-digit code
     const resetCode = crypto.randomInt(100000, 999999).toString();
 
-    // Store with 15-minute expiry
-    resetTokens[email] = {
+    // Store in DB with 15-minute expiry (handled by TTL index)
+    await ResetToken.findOneAndDelete({ email }); // Clear existing tokens for this email
+    await ResetToken.create({
+      email,
       code:    resetCode,
-      userId:  user._id.toString(),
-      expires: Date.now() + 15 * 60 * 1000
-    };
+      userId:  user._id
+    });
 
     res.json({
       message:   "Reset code generated successfully.",
@@ -142,6 +141,7 @@ exports.forgotPassword = async (req, res) => {
     });
 
   } catch (error) {
+    console.error("Forgot Password Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -161,14 +161,9 @@ exports.resetPassword = async (req, res) => {
       return res.status(400).json({ message: "New password must be at least 6 characters" });
     }
 
-    const record = resetTokens[email];
+    const record = await ResetToken.findOne({ email });
     if (!record) {
-      return res.status(400).json({ message: "No reset code found. Please request a new one." });
-    }
-
-    if (Date.now() > record.expires) {
-      delete resetTokens[email];
-      return res.status(400).json({ message: "Reset code has expired. Please request a new one." });
+      return res.status(400).json({ message: "No reset code found or it has expired. Please request a new one." });
     }
 
     if (record.code !== resetCode.trim()) {
@@ -177,11 +172,14 @@ exports.resetPassword = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await User.findByIdAndUpdate(record.userId, { password: hashedPassword });
-    delete resetTokens[email];
+    
+    // Delete the token after successful reset
+    await ResetToken.deleteOne({ _id: record._id });
 
     res.json({ message: "Password reset successfully. You can now login." });
 
   } catch (error) {
+    console.error("Reset Password Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

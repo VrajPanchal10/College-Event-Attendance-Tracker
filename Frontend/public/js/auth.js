@@ -1,5 +1,23 @@
 const API_URL = "https://college-event-attendance-tracker.onrender.com/api";
 
+// ── Render Cold-Start Wakeup ──
+// Render's free tier spins down after 15m. 
+// We ping the root on load to start the wakeup process early.
+(async function wakeUpServer() {
+  try {
+    const start = Date.now();
+    // Ping root endpoint
+    await fetch("https://college-event-attendance-tracker.onrender.com/");
+    console.log("Server awake in", (Date.now() - start) / 1000, "s");
+    
+    // Hide hint if it exists
+    const hint = document.getElementById("serverWarmHint");
+    if (hint) hint.classList.add("hidden");
+  } catch (e) {
+    // Silent fail
+  }
+})();
+
 
 // ===============================
 // PASSWORD STRENGTH — REGISTER

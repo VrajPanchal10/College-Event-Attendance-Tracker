@@ -10,6 +10,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../public/css/components.css">
   <link rel="stylesheet" href="../public/css/faculty-dashboard.css">
   <link rel="stylesheet" href="../public/css/responsive.css">
@@ -100,7 +101,7 @@
           <span class="valid-msg">✔ Looks good!</span>
         </div>
 
-        <div class="field" id="date">
+        <div class="field" id="f-date">
           <label>Event Date</label>
           <input id="date" type="date"
                  onchange="validateDate()" onblur="validateDate()">
@@ -169,7 +170,12 @@
     </div>
 
     <div class="events-section">
-      <h2>All Events</h2>
+      <div class="section-header-flex">
+        <h2>All Events</h2>
+        <button id="resetBtn" class="reset-all-btn" title="Delete all registrations and attendance records across all events">
+          🧹 Reset All Data
+        </button>
+      </div>
 
       <div class="search-container">
         <input type="text" id="facultySearch" placeholder="Search events by title..."

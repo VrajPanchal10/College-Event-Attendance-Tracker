@@ -304,3 +304,37 @@ body {
     background: linear-gradient(145deg, #dbeafe 0%, #eff6ff 40%, #ffffff 100%);
   }
 }
+
+/* ── Server Warming Hint ── */
+.server-warm-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-bottom: 20px;
+  animation: pageEnter 0.4s ease both;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: #f59e0b;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.9); opacity: 1; box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+  70% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+  100% { transform: scale(0.9); opacity: 1; box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+}
+
+.server-warm-hint.hidden {
+  display: none;
+}

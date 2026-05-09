@@ -44,14 +44,7 @@ async function loadEventDetails() {
     // ── Text fields ──
     document.getElementById("title").innerText    = event.title;
     document.getElementById("category").innerText = event.category;
-    document.getElementById("date").innerText     = event.date
-      ? new Date(event.date).toLocaleDateString("en-IN", {
-          weekday: "long",
-          day:     "numeric",
-          month:   "long",
-          year:    "numeric"
-        })
-      : "To Be Announced";
+    document.getElementById("date").innerText        = formatDate(event.date);
 
     document.getElementById("venue").innerText       = event.venue       || "Not specified";
     document.getElementById("description").innerText = event.description || "No description available.";
@@ -93,11 +86,7 @@ async function registerEvent() {
 // ===============================
 function goBack() {
   const role = localStorage.getItem("role");
-  if (role === "faculty") {
-    window.location.href = "faculty-dashboard.html";
-  } else {
-    window.location.href = "student-dashboard.html";
-  }
+  window.location.href = role === "faculty" ? "faculty-dashboard.html" : "student-dashboard.html";
 }
 
 
@@ -118,3 +107,10 @@ function showToast(message, type = "success") {
 // INIT
 // ===============================
 loadEventDetails();
+
+function formatDate(dateStr) {
+  if (!dateStr) return "TBA";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return "TBA";
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}

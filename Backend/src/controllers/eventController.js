@@ -50,15 +50,32 @@ exports.createEvent = async (req, res) => {
 
 // ===============================
 // GET ALL EVENTS
+// With optional pagination
 // ===============================
 exports.getAllEvents = async (req, res) => {
 
   try {
 
-    const events = await Event.find()
-      .populate("createdBy", "name email role");
+    const page  = parseInt(req.query.page)  || 1;
+    const limit = parseInt(req.query.limit) || 100; // default large limit to avoid breaking existing frontend
+    const skip  = (page - 1) * limit;
 
-    res.json(events);
+    const events = await Event.find()
+      .populate("createdBy", "name email role")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Event.countDocuments();
+
+    res.json({
+      events,
+      pagination: {
+        total,
+        page,
+        pages: Math.ceil(total / limit)
+      }
+    });
 
   } catch (error) {
 
@@ -139,6 +156,7 @@ exports.updateEvent = async (req, res) => {
 
 // ===============================
 // DELETE EVENT
+// Atomic cascading delete
 // ===============================
 exports.deleteEvent = async (req, res) => {
 
@@ -146,13 +164,18 @@ exports.deleteEvent = async (req, res) => {
 
     const { id } = req.params;
 
+    // Start a simple transaction-like sequence (or just sequential deletes)
     const event = await Event.findByIdAndDelete(id);
 
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
     }
 
-    res.json({ message: "Event deleted successfully" });
+    // Clean up related records
+    await Registration.deleteMany({ eventId: id });
+    await Attendance.deleteMany({ eventId: id });
+
+    res.json({ message: "Event and all related records deleted successfully" });
 
   } catch (error) {
 

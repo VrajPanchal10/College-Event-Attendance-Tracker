@@ -117,9 +117,12 @@ async function loadDashboard() {
       fetch(`${API_URL}/my-registrations`,   { headers: { Authorization: "Bearer " + token } })
     ]);
 
-    const events            = await eventsRes.json();
+    const eventsData        = await eventsRes.json();
     const attendanceRecords = await attendanceRes.json();
     const registrations     = await regRes.json();
+
+    // Extract events array from new API structure { events, pagination }
+    const events = eventsData.events || eventsData;
 
     // Step 3: Save fresh data to cache (safe write)
     safeSetCache(CACHE_KEY, { events, attendanceRecords, registrations });
@@ -295,11 +298,11 @@ function renderEvents() {
           Unregister
         </button>`;
     } else {
-      statusHTML = `<button class="primary-btn" onclick="registerEvent('${sanitize(event._id)}')">Register</button>`;
+      statusHTML = `<button class="primary-btn" onclick="registerEvent('${sanitize(event._id)}', this)">Register</button>`;
     }
 
     const bannerHTML = event.imageUrl
-      ? `<div class="card-banner"><img src="${BASE_URL}${event.imageUrl}" alt="${sanitize(event.title)}"></div>`
+      ? `<div class="card-banner"><img src="${BASE_URL}${event.imageUrl}" alt="${sanitize(event.title)}" loading="lazy" width="400" height="200"></div>`
       : "";
 
     // Fix #6: .card-actions class (no inline style)
@@ -310,7 +313,7 @@ function renderEvents() {
       ${reminderBadge}
       <h3>${sanitize(event.title)}</h3>
       <p><strong>Category:</strong> ${sanitize(event.category)}</p>
-      <p><strong>Date:</strong> ${event.date ? new Date(event.date).toLocaleDateString() : "TBA"}</p>
+      <p><strong>Date:</strong> ${formatDate(event.date)}</p>
       <p><strong>Venue:</strong> ${sanitize(event.venue) || "Not specified"}</p>
       <div class="card-actions">
         ${statusHTML}
@@ -368,7 +371,12 @@ function clearSearch() {
 // REGISTER EVENT
 // Fix #4: Button shows loading state, prevents double-submit
 // ===============================
-async function registerEvent(eventId) {
+async function registerEvent(eventId, btn) {
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<span class="loader-inline"></span>`;
+  }
+  
   try {
     const res = await fetch(`${API_URL}/register-event`, {
       method: "POST",
@@ -401,6 +409,11 @@ async function registerEvent(eventId) {
   } catch (err) {
     console.error("Registration Error:", err);
     showToast("Registration failed", "error");
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = "Register";
+    }
   }
 }
 
@@ -562,4 +575,11 @@ function showCardsSkeleton() {
 
 function removeCardsSkeleton() {
   // renderEvents() populates the container right after
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return "TBA";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return "TBA";
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }

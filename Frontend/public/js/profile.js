@@ -23,7 +23,8 @@ function logout() {
 // SET BACK LINK based on role
 // ===============================
 const backHref = role === "faculty" ? "faculty-dashboard.html" : "student-dashboard.html";
-document.getElementById("backLink").href = backHref;
+const backBtn = document.getElementById("backBtn");
+if (backBtn) backBtn.href = backHref;
 
 const backMobile = document.getElementById("backLinkMobile");
 if (backMobile) backMobile.href = backHref;

@@ -18,13 +18,15 @@
 <body class="page-enter">
 
   <div class="topbar">
+    <a href="#" id="backBtn" class="back-btn-nav">
+      <span>← Back</span>
+    </a>
     <!-- Fix #19: aria-hidden on decorative emoji -->
     <div class="logo"><span aria-hidden="true">🎓</span> Event Attendance Tracker</div>
-
+ 
     <!-- Desktop navigation -->
     <div class="top-actions">
       <span class="role-badge" id="topbarRole">Student</span>
-      <a href="#" id="backLink" class="nav-link">← Back</a>
       <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
 
@@ -38,8 +40,6 @@
     <!-- Mobile navigation panel -->
     <nav class="mobile-nav" aria-label="Mobile navigation">
       <span class="role-badge" id="topbarRoleMobile">Student</span>
-      <div class="mobile-nav-sep"></div>
-      <a href="#" id="backLinkMobile" class="nav-link">← Back to Dashboard</a>
       <div class="mobile-nav-sep"></div>
       <button class="logout-btn" onclick="logout()">Logout</button>
     </nav>

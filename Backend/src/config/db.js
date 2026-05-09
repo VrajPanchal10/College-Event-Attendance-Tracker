@@ -2,8 +2,14 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI);
-    console.log(`MongoDB Connected Successfully ✅  (db: ${conn.connection.name})`);
+    const options = {
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      family: 4 // Use IPv4, skip trying IPv6
+    };
+    const conn = await mongoose.connect(process.env.MONGO_URI, options);
+    console.log(`MongoDB Connected Successfully ✅ (db: ${conn.connection.name})`);
   } catch (error) {
     console.error("MongoDB Connection Failed ❌");
     console.error(error.message);

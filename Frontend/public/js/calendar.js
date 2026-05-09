@@ -57,7 +57,8 @@ async function loadCalendar() {
       fetch(`${API_URL}/student-attendance`, { headers })
     ]);
 
-    allEvents = await eventsRes.json();
+    const eventsData = await eventsRes.json();
+    allEvents = eventsData.events || eventsData;
 
     const registrations = await regRes.json();
     registeredIds = new Set(registrations.map(r => r.eventId?._id || r.eventId));

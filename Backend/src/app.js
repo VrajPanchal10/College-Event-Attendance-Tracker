@@ -9,18 +9,29 @@ const registrationRoutes = require("./routes/registrationRoutes");
 const attendanceRoutes   = require("./routes/attendanceRoutes");
 const demoRoutes         = require("./routes/demoRoutes");
 
+const helmet     = require("helmet");
+const rateLimit  = require("express-rate-limit");
+
 const app = express();
 
 // Middlewares
+app.use(helmet()); // Sets various security-related HTTP headers
 app.use(cors());
 app.use(express.json());
+
+// Rate limiting — prevents brute-force attacks
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: { message: "Too many requests from this IP, please try again after 15 minutes" }
+});
 
 // ── Serve uploaded event banner images ──
 // Images are stored in /uploads at the project root (one level above /src)
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // Routes
-app.use("/api/auth",   authRoutes);
+app.use("/api/auth",   authLimiter, authRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api",        registrationRoutes);
 app.use("/api",        attendanceRoutes);

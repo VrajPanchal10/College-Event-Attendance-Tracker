@@ -69,11 +69,25 @@ exports.unregisterFromEvent = async (req, res) => {
 exports.getRegistrationsByEvent = async (req, res) => {
   try {
     const { eventId } = req.params;
+    const page  = parseInt(req.query.page)  || 1;
+    const limit = parseInt(req.query.limit) || 100;
+    const skip  = (page - 1) * limit;
 
     const registrations = await Registration.find({ eventId })
-      .populate("studentId", "name email");
+      .populate("studentId", "name email")
+      .skip(skip)
+      .limit(limit);
 
-    res.status(200).json(registrations);
+    const total = await Registration.countDocuments({ eventId });
+
+    res.status(200).json({
+      registrations,
+      pagination: {
+        total,
+        page,
+        pages: Math.ceil(total / limit)
+      }
+    });
 
   } catch (error) {
     res.status(500).json({

@@ -40,7 +40,8 @@ async function loadAttendance() {
 
     const registrations     = await regRes.json();
     const attendanceRecords = await attRes.json();
-    const allEvents         = await evtRes.json();
+    const evtResData        = await evtRes.json();
+    const allEvents         = evtResData.events || evtResData;
 
     removeTableSkeleton();
 
@@ -102,7 +103,7 @@ async function loadAttendance() {
       if (isPresent) presentCount++;
 
       const dateAttended = isPresent
-        ? new Date(attendedMap[eventId]).toLocaleDateString()
+        ? formatDate(attendedMap[eventId])
         : "—";
 
       // Category chip class
@@ -219,4 +220,11 @@ function removeTableSkeleton() {
       <p>No attendance records found.</p>
     </div>
   `;
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return "TBA";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return "TBA";
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
