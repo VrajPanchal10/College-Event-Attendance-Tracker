@@ -1,19 +1,14 @@
 const BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-  ? "http://localhost:5000"
+  ? `http://${window.location.hostname}:5000`
   : "https://college-event-attendance-tracker.onrender.com";
 const API_URL = `${BASE_URL}/api`;
 
 // ── Render Cold-Start Wakeup ──
-// Render's free tier spins down after 15m. 
-// We ping the root on load to start the wakeup process early.
 (async function wakeUpServer() {
   try {
-    const start = Date.now();
-    // Ping root endpoint
+    // Ping root endpoint to wake up Render free tier
     await fetch("https://college-event-attendance-tracker.onrender.com/");
-    console.log("Server awake in", (Date.now() - start) / 1000, "s");
     
-    // Hide hint if it exists
     const hint = document.getElementById("serverWarmHint");
     if (hint) hint.classList.add("hidden");
   } catch (e) {
@@ -21,52 +16,51 @@ const API_URL = `${BASE_URL}/api`;
   }
 })();
 
-
 // ===============================
-// PASSWORD STRENGTH — REGISTER
+// PASSWORD UTILITIES
 // ===============================
 const PWD_KEYS = ['len', 'upper', 'lower', 'num', 'special'];
 const PWD_LABELS = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
 const PWD_COLORS = ['', '#ef4444', '#f59e0b', '#3b82f6', '#2563eb', '#16a34a'];
 
-function getPwdRules(v) {
+function getPasswordRules(val) {
   return {
-    len: v.length >= 6,
-    upper: /[A-Z]/.test(v),
-    lower: /[a-z]/.test(v),
-    num: /[0-9]/.test(v),
-    special: /[!@#$%^&*()\-_=+\[\]{};':"\\|,.<>/?]/.test(v)
+    len: val.length >= 6,
+    upper: /[A-Z]/.test(val),
+    lower: /[a-z]/.test(val),
+    num: /[0-9]/.test(val),
+    special: /[!@#$%^&*()\-_=+\[\]{};':"\\|,.<>/?]/.test(val)
   };
 }
 
-function showRegisterPop() {
-  const pop = document.getElementById('registerPop');
+function showPopover(id = 'registerPop') {
+  const pop = document.getElementById(id);
   if (pop) pop.classList.add('show');
 }
 
-function hideRegisterPop() {
+function hidePopover(id = 'registerPop') {
   setTimeout(() => {
-    const pop = document.getElementById('registerPop');
+    const pop = document.getElementById(id);
     if (pop) pop.classList.remove('show');
   }, 200);
 }
 
-function checkRegisterPwd(v) {
-  const r = getPwdRules(v);
-  const passed = PWD_KEYS.filter(k => r[k]).length;
+function updatePasswordStrengthUI(val, prefix = 'r') {
+  const rules = getPasswordRules(val);
+  const passed = PWD_KEYS.filter(k => rules[k]).length;
 
   PWD_KEYS.forEach(k => {
-    const label = document.getElementById('rpl-' + k);
-    const fill = document.getElementById('rpf-' + k);
-    const check = document.getElementById('rpc-' + k);
-    if (label) label.classList.toggle('pass', r[k]);
-    if (fill) fill.classList.toggle('pass', r[k]);
-    if (check) check.classList.toggle('pass', r[k]);
+    const label = document.getElementById(`${prefix}pl-${k}`);
+    const fill = document.getElementById(`${prefix}pf-${k}`);
+    const check = document.getElementById(`${prefix}pc-${k}`);
+    if (label) label.classList.toggle('pass', rules[k]);
+    if (fill) fill.classList.toggle('pass', rules[k]);
+    if (check) check.classList.toggle('pass', rules[k]);
   });
 
-  const overallFill = document.getElementById('rOverallFill');
-  const overallTxt = document.getElementById('rOverallTxt');
-  const overallCount = document.getElementById('rOverallCount');
+  const overallFill = document.getElementById(`${prefix}OverallFill`);
+  const overallTxt = document.getElementById(`${prefix}OverallTxt`);
+  const overallCount = document.getElementById(`${prefix}OverallCount`);
 
   if (overallFill) {
     overallFill.style.width = (passed / 5 * 100) + '%';
@@ -85,17 +79,13 @@ function checkRegisterPwd(v) {
   if (btn) btn.disabled = passed < 5;
 }
 
-function toggleRegisterEye() {
-  const inp = document.getElementById('password');
-  const btn = document.getElementById('regEyeBtn');
-  if (!inp) return;
-  if (inp.type === 'password') { inp.type = 'text'; if (btn) btn.innerHTML = '&#128064;'; }
-  else { inp.type = 'password'; if (btn) btn.innerHTML = '&#128065;'; }
-}
-
+// Aliases for compatibility with existing HTML
+function checkRegisterPwd(v) { updatePasswordStrengthUI(v, 'r'); }
+function showRegisterPop() { showPopover('registerPop'); }
+function hideRegisterPop() { hidePopover('registerPop'); }
 
 // ===============================
-// LOGIN — Fix #4: Loading state + Fix #2: No alert()
+// AUTHENTICATION
 // ===============================
 async function login(event) {
   event.preventDefault();
@@ -104,7 +94,6 @@ async function login(event) {
   const password = document.getElementById("password").value;
   const role = document.getElementById("role").value;
 
-  // Fix #4: Show loading state on button
   const btn = document.getElementById("loginBtn");
   const originalText = btn ? btn.innerHTML : "";
   if (btn) {
@@ -126,31 +115,19 @@ async function login(event) {
       localStorage.setItem("role", data.role);
       localStorage.setItem("name", data.name);
       localStorage.setItem("email", data.email);
-      localStorage.setItem("loginToast", "true"); // Flag for showing toast after redirect
+      localStorage.setItem("loginToast", "true");
 
-      if (data.role === "student") {
-        window.location.href = "student-dashboard.html";
-      } else if (data.role === "faculty") {
-        window.location.href = "faculty-dashboard.html";
-      }
-
+      window.location.href = data.role === "student" ? "student-dashboard.html" : "faculty-dashboard.html";
     } else {
-      // Fix #2: Show styled error instead of alert()
-      showAuthError(data.message || "Login failed. Please check your credentials.");
+      showToast(data.message || "Login failed.", "error");
       if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
     }
-
   } catch (err) {
-    console.error("Login error:", err);
-    showAuthError("Connection error. Please check your network and try again.");
+    showToast("Connection error. Please try again.", "error");
     if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
   }
 }
 
-
-// ===============================
-// REGISTER — Fix #4: Loading state + Fix #2: No alert()
-// ===============================
 async function register(event) {
   event.preventDefault();
 
@@ -159,18 +136,14 @@ async function register(event) {
   const password = document.getElementById("password").value;
   const role = document.getElementById("role").value;
 
-  // Frontend password strength check
   const rules = getPasswordRules(password);
-  const allPass = Object.values(rules).every(Boolean);
-
-  if (!allPass) {
+  if (!Object.values(rules).every(Boolean)) {
     showRegisterPop();
     checkRegisterPwd(password);
-    showAuthError("Please make sure your password meets all the requirements shown.");
+    showToast("Please meet all password requirements.", "error");
     return;
   }
 
-  // Fix #4: Show loading state
   const btn = document.getElementById("registerBtn");
   const originalText = btn ? btn.innerHTML : "";
   if (btn) {
@@ -186,151 +159,29 @@ async function register(event) {
     });
 
     const data = await res.json();
-
     if (res.ok) {
-      // Fix #2: No alert() — show inline success then redirect
-      showAuthSuccess(data.message || "Account created! Redirecting to login...");
-      setTimeout(() => { window.location.href = "login.html"; }, 1800);
+      showToast(data.message || "Account created!", "success");
+      setTimeout(() => { window.location.href = "login.html"; }, 1500);
     } else {
-      showAuthError(data.message || "Registration failed.");
+      showToast(data.message || "Registration failed.", "error");
       if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
     }
-
   } catch (err) {
-    console.error("Register error:", err);
-    showAuthError("Connection error. Please check your network and try again.");
+    showToast("Connection error. Please try again.", "error");
     if (btn) { btn.innerHTML = originalText; btn.disabled = false; }
   }
 }
 
-
 // ===============================
-// AUTH ERROR / SUCCESS DISPLAY
-// Fix #2: Replaces all alert() calls with inline styled messages
+// UI HELPERS
 // ===============================
-function showAuthError(msg) {
-  let el = document.getElementById("authMsg");
-  if (!el) {
-    el = document.createElement("div");
-    el.id = "authMsg";
-    el.className = "auth-msg auth-msg-error";
-    // Insert before the first button or at end of form
-    const form = document.querySelector("form");
-    const submitBtn = form.querySelector("button[type='submit']");
-
-    if (submitBtn) {
-      form.insertBefore(el, submitBtn);
-    } else {
-      form.appendChild(el);
-    }
-  }
-  el.className = "auth-msg auth-msg-error";
-  el.textContent = msg;
-  el.style.display = "block";
-  // Auto-hide after 5s
-  clearTimeout(el._t);
-  el._t = setTimeout(() => { el.style.display = "none"; }, 5000);
-}
-
-function showAuthSuccess(msg) {
-  let el = document.getElementById("authMsg");
-  if (!el) {
-    el = document.createElement("div");
-    el.id = "authMsg";
-    const form = document.querySelector("form");
-    const submitBtn = form.querySelector("button[type='submit']");
-
-    if (submitBtn) {
-      form.insertBefore(el, submitBtn);
-    } else {
-      form.appendChild(el);
-    }
-  }
-  el.className = "auth-msg auth-msg-success";
-  el.textContent = msg;
-  el.style.display = "block";
-}
-
-
-// ===============================
-// PASSWORD RULES HELPER
-// ===============================
-function getPasswordRules(val) {
-  return {
-    len: val.length >= 6,
-    upper: /[A-Z]/.test(val),
-    lower: /[a-z]/.test(val),
-    num: /[0-9]/.test(val),
-    special: /[!@#$%^&*()\-_=+\[\]{};':"\\|,.<>/?]/.test(val)
-  };
-}
-
-
-// ===============================
-// PASSWORD STRENGTH — live update
-// ===============================
-const STRENGTH_LABELS = ["", "Weak", "Fair", "Good", "Strong", "Very Strong"];
-const STRENGTH_COLORS = ["", "#ef4444", "#f59e0b", "#3b82f6", "#2563eb", "#16a34a"];
-const RULE_KEYS = ["len", "upper", "lower", "num", "special"];
-
-function checkPasswordStrength(val) {
-  const rules = getPasswordRules(val);
-  const passed = RULE_KEYS.filter(k => rules[k]).length;
-
-  RULE_KEYS.forEach(k => {
-    const lbl = document.getElementById("pl-" + k);
-    const fil = document.getElementById("pf-" + k);
-    const chk = document.getElementById("pc-" + k);
-    if (lbl) lbl.classList.toggle("pass", rules[k]);
-    if (fil) fil.classList.toggle("pass", rules[k]);
-    if (chk) chk.classList.toggle("pass", rules[k]);
-  });
-
-  const fill = document.getElementById("overallFill");
-  if (fill) {
-    fill.style.width = (passed / 5 * 100) + "%";
-    fill.style.background = STRENGTH_COLORS[passed] || "#e2e8f0";
-  }
-
-  const txt = document.getElementById("overallTxt");
-  const count = document.getElementById("overallCount");
-  if (txt) { txt.textContent = passed > 0 ? STRENGTH_LABELS[passed] : "Start typing"; txt.style.color = STRENGTH_COLORS[passed] || "#94a3b8"; }
-  if (count) { count.textContent = passed + " / 5"; count.style.color = STRENGTH_COLORS[passed] || "#94a3b8"; }
-
-  const btn = document.getElementById("registerBtn");
-  if (btn) btn.disabled = passed < 5;
-}
-
-
-// ===============================
-// POPOVER — show / hide
-// ===============================
-function showPopover() {
-  const pop = document.getElementById("pwdPopover");
-  if (pop) pop.classList.add("show");
-}
-
-function hidePopover() {
-  setTimeout(() => {
-    const pop = document.getElementById("pwdPopover");
-    if (pop) pop.classList.remove("show");
-  }, 200);
-}
-
-
-// ===============================
-// EYE TOGGLE — show / hide password (Login page)
-// ===============================
-function toggleEye() {
-  const inp = document.getElementById("password");
-  const btn = document.getElementById("eyeBtn");
+function toggleEye(id = 'password', btnId = 'eyeBtn') {
+  const inp = document.getElementById(id);
+  const btn = document.getElementById(btnId);
   if (!inp) return;
-
-  if (inp.type === "password") {
-    inp.type = "text";
-    if (btn) btn.innerHTML = "&#128064;";
-  } else {
-    inp.type = "password";
-    if (btn) btn.innerHTML = "&#128065;";
-  }
+  const isPwd = inp.type === "password";
+  inp.type = isPwd ? "text" : "password";
+  if (btn) btn.innerHTML = isPwd ? "&#128064;" : "&#128065;";
 }
+
+function toggleRegisterEye() { toggleEye('password', 'regEyeBtn'); }

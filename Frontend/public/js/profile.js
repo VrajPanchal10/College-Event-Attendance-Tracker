@@ -169,9 +169,16 @@ function setValid(id) {
   const f = document.getElementById("f-" + id);
   if (f) { f.classList.remove("error"); f.classList.add("valid"); }
 }
-function setError(id) {
+function setError(id, msg) {
   const f = document.getElementById("f-" + id);
-  if (f) { f.classList.remove("valid"); f.classList.add("error"); }
+  if (f) {
+    f.classList.remove("valid");
+    f.classList.add("error");
+    if (msg) {
+      const errorSpan = f.querySelector(".error-msg");
+      if (errorSpan) errorSpan.innerText = "⚠ " + msg;
+    }
+  }
 }
 function setNeutral(id) {
   const f = document.getElementById("f-" + id);
@@ -215,6 +222,14 @@ function hideProfilePop() {
 function toggleProfileEye() {
   const inp = document.getElementById('newPassword');
   const btn = document.getElementById('profileEyeBtn');
+  if (!inp) return;
+  if (inp.type === 'password') { inp.type = 'text';     if (btn) btn.innerHTML = '&#128064;'; }
+  else                         { inp.type = 'password'; if (btn) btn.innerHTML = '&#128065;'; }
+}
+
+function toggleCurrentEye() {
+  const inp = document.getElementById('currentPassword');
+  const btn = document.getElementById('currentEyeBtn');
   if (!inp) return;
   if (inp.type === 'password') { inp.type = 'text';     if (btn) btn.innerHTML = '&#128064;'; }
   else                         { inp.type = 'password'; if (btn) btn.innerHTML = '&#128065;'; }
@@ -274,23 +289,38 @@ function validateConfirmPassword() {
 // CHANGE PASSWORD — SUBMIT
 // ===============================
 async function changePassword() {
-
+  const btn = document.getElementById("updatePwdBtn");
   const currentPassword = document.getElementById("currentPassword").value;
   const newPassword     = document.getElementById("newPassword").value;
   const confirmPassword = document.getElementById("confirmPassword").value;
 
-  // Validate
-  if (!currentPassword) { setError("currentPassword"); showToast("Please enter your current password", "error"); return; }
-  if (!validateNewPassword())    return;
+  // Local Validation
+  if (!currentPassword) { 
+    setError("currentPassword", "Current password is required"); 
+    showToast("Please enter your current password", "error"); 
+    return; 
+  }
+  if (!validateNewPassword()) return;
   if (!validateConfirmPassword()) return;
 
-  try {
+  if (newPassword === currentPassword) {
+    setError("newPassword", "New password cannot be same as current");
+    showToast("New password cannot be the same as current password", "error");
+    return;
+  }
 
+  // Set Loading State
+  const originalBtnText = btn.innerText;
+  btn.innerText = "Updating...";
+  btn.disabled = true;
+
+  try {
+    const activeToken = localStorage.getItem("token");
     const res = await fetch(`${API_URL}/auth/change-password`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + token
+        "Authorization": "Bearer " + activeToken
       },
       body: JSON.stringify({ currentPassword, newPassword })
     });
@@ -298,38 +328,41 @@ async function changePassword() {
     const data = await res.json();
 
     if (res.ok) {
-      showToast(data.message, "success");
-      // Clear fields
+      showToast(data.message || "Password updated successfully!", "success");
+      
+      // Clear all fields and reset styles
       document.getElementById("currentPassword").value = "";
       document.getElementById("newPassword").value     = "";
       document.getElementById("confirmPassword").value = "";
+      
       setNeutral("currentPassword");
       setNeutral("newPassword");
       setNeutral("confirmPassword");
+      
+      // Reset strength bars (if applicable)
+      if (typeof validateNewPassword === 'function') validateNewPassword("");
+
     } else {
-      if (data.message.includes("Current")) setError("currentPassword");
-      showToast(data.message, "error");
+      // Server-side error
+      if (data.message && data.message.toLowerCase().includes("current")) {
+        setError("currentPassword", data.message);
+      } else if (data.message && data.message.toLowerCase().includes("new")) {
+        setError("newPassword", data.message);
+      }
+      showToast(data.message || "Failed to update password", "error");
     }
 
   } catch (error) {
     console.error("Change Password Error:", error);
-    showToast("Failed to change password", "error");
+    showToast("Connection error. Please try again.", "error");
+  } finally {
+    // Reset Button State
+    btn.innerText = originalBtnText;
+    btn.disabled = false;
   }
-
 }
 
 
-// ===============================
-// TOAST
-// ===============================
-function showToast(message, type = "success") {
-  const toast = document.getElementById("toast");
-  toast.innerText = message;
-  toast.style.background = type === "error" ? "#dc2626" : "#16a34a";
-  toast.classList.add("show");
-  clearTimeout(toast._t);
-  toast._t = setTimeout(() => toast.classList.remove("show"), 3000);
-}
 
 
 // ===============================

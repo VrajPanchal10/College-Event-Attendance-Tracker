@@ -101,7 +101,7 @@ function safeSetCache(key, data) {
   try {
     localStorage.setItem(key, JSON.stringify(data));
   } catch (e) {
-    console.warn("Cache write failed (storage full or private mode):", e);
+    // Silent fail for cache
   }
 }
 
@@ -529,20 +529,6 @@ function logout() {
 }
 
 
-// ===============================
-// TOAST
-// Fix #8: Toast already has aria-live="polite" in HTML
-// ===============================
-function showToast(message, type = "success") {
-  const toast = document.getElementById("toast");
-  if (!toast) return;
-  toast.innerText = message;
-  toast.style.background =
-    type === "error" ? "#dc2626" : "#16a34a";
-  toast.classList.add("show");
-  clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => toast.classList.remove("show"), 3000);
-}
 
 
 // ===============================

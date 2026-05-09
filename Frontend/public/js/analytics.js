@@ -23,17 +23,6 @@ function logout() {
 }
 
 
-// ===============================
-// TOAST
-// ===============================
-function showToast(message, type = "success") {
-  const toast = document.getElementById("toast");
-  toast.innerText = message;
-  toast.style.background = type === "error" ? "#dc2626" : "#16a34a";
-  toast.classList.add("show");
-  clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => toast.classList.remove("show"), 3000);
-}
 
 
 // ===============================
@@ -44,67 +33,58 @@ function showToast(message, type = "success") {
 async function loadAnalytics() {
 
   const loader = document.getElementById("loader");
-  loader.style.display = "block";
+  if (loader) loader.style.display = "block";
 
   try {
-
-    // 1. Get all events
-    const eventsRes = await fetch(`${API_URL}/events`, {
+    // Fetch consolidated analytics data from the new endpoint
+    const res = await fetch(`${API_URL}/analytics`, {
       headers: { Authorization: "Bearer " + token }
     });
-    const events = await eventsRes.json();
 
-    if (!events.length) {
-      loader.style.display = "none";
-      showToast("No events found.", "error");
+    if (!res.ok) throw new Error("Failed to fetch analytics");
+
+    const data = await res.json();
+    const { totalEvents, totalRegistrations, totalAttendance, eventStats } = data;
+
+    if (loader) loader.style.display = "none";
+
+    // Handle empty state
+    if (!eventStats || eventStats.length === 0) {
+      document.querySelectorAll(".chart-card").forEach(card => card.style.display = "none");
+      const emptyState = document.getElementById("emptyState");
+      if (emptyState) emptyState.style.display = "block";
       return;
     }
 
-    // 2. Get registrations & attendance per event in parallel
-    const [regResults, attResults] = await Promise.all([
-      Promise.all(
-        events.map(e =>
-          fetch(`${API_URL}/registrations/${e._id}`, {
-            headers: { Authorization: "Bearer " + token }
-          }).then(r => r.json()).catch(() => [])
-        )
-      ),
-      Promise.all(
-        events.map(e =>
-          fetch(`${API_URL}/attendance/${e._id}`, {
-            headers: { Authorization: "Bearer " + token }
-          }).then(r => r.json()).catch(() => [])
-        )
-      )
-    ]);
+    // Hide empty state if data exists
+    const emptyState = document.getElementById("emptyState");
+    if (emptyState) emptyState.style.display = "none";
+    document.querySelectorAll(".chart-card").forEach(card => card.style.display = "block");
 
-    loader.style.display = "none";
+    // Calculate overall stats
+    const absent = totalRegistrations - totalAttendance;
+    const pct    = totalRegistrations === 0 ? 0 : Math.round((totalAttendance / totalRegistrations) * 100);
 
-    // 3. Build data arrays
-    const labels   = events.map(e => e.title);
-    const regCounts = regResults.map(r => r.length);
-    const attCounts = attResults.map(a => a.length);
-
-    const totalRegs = regCounts.reduce((a, b) => a + b, 0);
-    const totalAtt  = attCounts.reduce((a, b) => a + b, 0);
-    const absent    = totalRegs - totalAtt;
-    const pct       = totalRegs === 0 ? 0 : Math.round((totalAtt / totalRegs) * 100);
-
-    // 4. Update stat cards
-    document.getElementById("totalEvents").innerText        = events.length;
-    document.getElementById("totalRegistrations").innerText = totalRegs;
-    document.getElementById("totalAttended").innerText      = totalAtt;
+    // Update stat cards
+    document.getElementById("totalEvents").innerText        = totalEvents;
+    document.getElementById("totalRegistrations").innerText = totalRegistrations;
+    document.getElementById("totalAttended").innerText      = totalAttendance;
     document.getElementById("attendancePercent").innerText  = pct + "%";
 
-    // 5. Render charts
+    // Build chart data arrays
+    const labels    = eventStats.map(e => e.title);
+    const regCounts = eventStats.map(e => e.regCount);
+    const attCounts = eventStats.map(e => e.attCount);
+
+    // Render charts
     renderBarChart(labels, regCounts, attCounts);
-    renderDoughnutChart(totalAtt, absent, pct);
+    renderDoughnutChart(totalAttendance, absent, pct);
     renderHorizontalBar(labels, regCounts);
 
   } catch (error) {
-    loader.style.display = "none";
+    if (loader) loader.style.display = "none";
     console.error("Analytics Load Error:", error);
-    showToast("Failed to load analytics", "error");
+    showToast("Failed to load analytics. Please try again later.", "error");
   }
 
 }
@@ -139,6 +119,7 @@ function renderBarChart(labels, regCounts, attCounts) {
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: {
           position: "top",
@@ -192,6 +173,7 @@ function renderDoughnutChart(totalAtt, absent, pct) {
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       cutout: "72%",
       plugins: {
         legend: {
@@ -263,6 +245,7 @@ function renderHorizontalBar(labels, regCounts) {
     options: {
       indexAxis: "y",
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
         tooltip: {

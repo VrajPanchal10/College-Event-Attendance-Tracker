@@ -1,30 +1,3 @@
-// Fix #2: Removed alert('Test function works!') — use showToast instead
-function testButtonClick() {
-  console.log('Test button clicked!');
-}
-
-// Add this function to handle the button click properly
-function handleMarkAllPresent(eventId) {
-  if (!regCache[eventId]) {
-    showToast('No registration data found for this event!', 'error');
-    return;
-  }
-  
-  const { registrations, presentIds } = regCache[eventId];
-  const absentIds = registrations
-    .filter(r => !presentIds.includes(r.studentId?._id))
-    .map(r => r.studentId?._id)
-    .filter(Boolean);
-  
-  if (absentIds.length === 0) {
-    showToast('All students are already marked present!', 'info');
-    return;
-  }
-  
-  // Call the actual function to mark attendance
-  markAllAttendance(eventId, absentIds);
-}
-
 // ===============================
 // GLOBAL VARIABLES
 // ===============================
@@ -53,9 +26,6 @@ function logout() {
   window.location.href = "login.html";
 }
 
-// ===============================
-// GLOBAL VARIABLES
-// ===============================
 let allFacultyEvents = [];
 let totalRegistrations = 0;
 let regCache = {}; // Cache for student lists: { eventId: { registrations, presentIds } }
@@ -150,7 +120,8 @@ function removeImage() {
 }
 
 function resetForm() {
-  document.getElementById("eventForm").reset();
+  const form = document.getElementById("eventForm");
+  if (form) form.reset();
   removeImage();
   
   const btn = document.getElementById("createBtn");
@@ -229,17 +200,23 @@ function validateDescription() {
   setNeutral("description"); return true;
 }
 
-function resetForm() {
-  ["title", "category", "date", "venue", "description"].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = "";
-    setNeutral(id);
-  });
-  const tc = document.getElementById("title-counter");
-  const dc = document.getElementById("desc-counter");
-  if (tc) tc.textContent = "0 / 80";
-  if (dc) dc.textContent = "0 / 500";
-  removeImage();
+// helper to handle bulk mark present from button click
+function handleMarkAllPresent(eventId) {
+  if (!regCache[eventId]) {
+    showToast('No registration data found!', 'error');
+    return;
+  }
+  const { registrations, presentIds } = regCache[eventId];
+  const absentIds = registrations
+    .filter(r => !presentIds.includes(r.studentId?._id))
+    .map(r => r.studentId?._id)
+    .filter(Boolean);
+  
+  if (absentIds.length === 0) {
+    showToast('All students are already marked present!', 'info');
+    return;
+  }
+  markAllAttendance(eventId, absentIds);
 }
 
 
@@ -830,17 +807,6 @@ function closeModal() {
 }
 
 
-// ===============================
-// TOAST
-// ===============================
-function showToast(message, type = "success") {
-  const toast = document.getElementById("toast");
-  toast.innerText = message;
-  toast.style.background = type === "error" ? "#dc2626" : type === "info" ? "#2563eb" : "#16a34a";
-  toast.classList.add("show");
-  clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => toast.classList.remove("show"), 3000);
-}
 
 // ===============================
 // SKELETON HELPERS

@@ -89,7 +89,14 @@
     </div>
 
 
-    <div class="charts-grid">
+    <div id="chartsGrid" class="charts-grid">
+
+      <!-- Empty State (Shown via JS when no events exist) -->
+      <div id="emptyState" class="empty-state">
+        <span class="empty-state-icon">📊</span>
+        <h3>No Data Available</h3>
+        <p>There are currently no events to track. Create some events to see analytics here!</p>
+      </div>
 
       <!-- Bar Chart — full width -->
       <div class="chart-card full-width">
@@ -102,7 +109,7 @@
         </div>
         <!-- max-width:100% prevents chart overflow on mobile -->
         <div class="chart-canvas-wrap">
-          <canvas id="barChart" height="90" style="max-width:100%;"></canvas>
+          <canvas id="barChart" style="max-width:100%;"></canvas>
         </div>
       </div>
 
@@ -115,8 +122,10 @@
           </div>
           <span class="chart-badge">Doughnut</span>
         </div>
-        <div style="max-width:280px;margin:0 auto;">
-          <canvas id="doughnutChart" style="max-width:100%;"></canvas>
+        <div class="chart-canvas-wrap" style="display:flex; justify-content:center; align-items:center;">
+          <div style="width:100%; max-width:280px; height:100%;">
+            <canvas id="doughnutChart" style="max-width:100%;"></canvas>
+          </div>
         </div>
       </div>
 
@@ -129,7 +138,9 @@
           </div>
           <span class="chart-badge">Ranking</span>
         </div>
-        <canvas id="horizontalBar" height="220" style="max-width:100%;"></canvas>
+        <div class="chart-canvas-wrap">
+          <canvas id="horizontalBar" style="max-width:100%;"></canvas>
+        </div>
       </div>
 
     </div>
@@ -142,6 +153,7 @@
   <!-- Fix #8/#10: Toast BEFORE scripts + aria-live -->
   <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
+  <script src="../public/js/toast_utility.js"></script>
   <script src="../public/js/analytics.js"></script>
   <script src="../public/js/mobile-menu.js"></script>
 

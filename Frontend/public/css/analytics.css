@@ -175,17 +175,46 @@
   flex-shrink: 0;
 }
 
-/* Canvas wrapper — prevents charts from overflowing */
+/* Canvas wrapper — enforces consistent height across devices */
 .chart-canvas-wrap {
   position: relative;
   width: 100%;
+  height: clamp(280px, 40vh, 380px); /* Fixed fluid height */
   overflow: hidden;
 }
 
 /* Ensures Chart.js canvases are always bounded */
 canvas {
   max-width: 100% !important;
-  height: auto !important;
+  /* Removed height: auto !important as it breaks Chart.js aspect ratio logic */
+}
+
+/* ── Empty State ── */
+.empty-state {
+  grid-column: 1 / -1;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 60px 20px;
+  text-align: center;
+  border: 2px dashed #e2e8f0;
+  display: none; /* Shown via JS when no events exist */
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.empty-state h3 {
+  font-size: 1.2rem;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  font-size: 0.9rem;
+  color: #64748b;
 }
 
 /* ══════════════════════════════════════════════════

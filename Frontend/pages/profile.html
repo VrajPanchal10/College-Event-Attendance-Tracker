@@ -113,8 +113,12 @@
 
       <div class="pwd-field" id="f-currentPassword">
         <label>Current Password <span class="required">*</span></label>
-        <input type="password" id="currentPassword" placeholder="Enter current password"
-               oninput="clearPwdError()">
+        <div class="pwd-input-row">
+          <input type="password" id="currentPassword" placeholder="Enter current password"
+                 oninput="clearPwdError()">
+          <button type="button" class="eye-toggle-profile" id="currentEyeBtn"
+                  onclick="toggleCurrentEye()" aria-label="Show/hide password">&#128065;</button>
+        </div>
         <span class="error-msg">⚠ Current password is required</span>
       </div>
 
@@ -191,7 +195,7 @@
         <span class="valid-msg">✔ Passwords match!</span>
       </div>
 
-      <button class="primary-btn" onclick="changePassword()">
+      <button id="updatePwdBtn" class="primary-btn" onclick="changePassword()">
         Update Password
       </button>
 
@@ -203,6 +207,7 @@
   <!-- Fix #8/#10: Toast BEFORE scripts + aria-live -->
   <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
+  <script src="../public/js/toast_utility.js"></script>
   <script src="../public/js/profile.js"></script>
   <script src="../public/js/mobile-menu.js"></script>
 

@@ -97,17 +97,6 @@ function goBack() {
 }
 
 
-// ===============================
-// TOAST
-// ===============================
-function showToast(message, type = "success") {
-  const toast = document.getElementById("toast");
-  toast.innerText          = message;
-  toast.style.background   = type === "error" ? "#dc2626" : "#16a34a";
-  toast.classList.add("show");
-  clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => toast.classList.remove("show"), 3000);
-}
 
 
 // ===============================

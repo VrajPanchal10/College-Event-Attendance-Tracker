@@ -243,26 +243,21 @@ img {
   }
 }
 
-/* ── Auth Navigation ── */
-.top-nav-auth {
-  position: absolute;
-  top: clamp(12px, 4vw, 24px);
-  left: clamp(12px, 4vw, 24px);
-  z-index: 100;
+/* ── Auth Navigation (Card-Internal) ── */
+.back-link-top {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #6366f1;
+  text-decoration: none;
+  font-weight: 600;
+  margin-bottom: 20px;
+  transition: color 0.2s, transform 0.2s;
 }
 
-@media (max-width: 768px) {
-  .top-nav-auth {
-    top: 16px;
-    left: 16px;
-  }
-}
-
-@media (max-width: 480px) {
-  .top-nav-auth {
-    top: 12px;
-    left: 12px;
-  }
+.back-link-top:hover {
+  color: #4f46e5;
+  transform: translateX(-4px);
 }
 
 /* Primary — used for Register, Create Event, etc. */
@@ -754,80 +749,7 @@ img {
 /* ══════════════════════════════════════════════════
    TOAST NOTIFICATION
    ══════════════════════════════════════════════════ */
-.toast {
-  position: fixed;
-  bottom: clamp(16px, 3vw, 28px);
-  right: clamp(16px, 3vw, 28px);
-  background: #1e293b;
-  color: #f8fafc;
-  padding: clamp(10px, 1.5vw, 13px) clamp(14px, 2vw, 20px);
-  border-radius: 10px;
-  font-family: 'Poppins', sans-serif;
-  font-size: clamp(0.8rem, 1.8vw, 0.875rem);
-  font-weight: 500;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(12px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  z-index: 999;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-  border-left: 4px solid #2563eb;
-  max-width: min(360px, calc(100vw - 32px));
-  word-break: break-word;
-}
-
-.toast.show {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
-/* ══════════════════════════════════════════════════
-   RESPONSIVE — Topbar and layout
-   ══════════════════════════════════════════════════ */
-
-/* Tablet — reduce topbar padding slightly */
-@media (max-width: 1024px) {
-  .topbar {
-    padding: 0 clamp(16px, 3vw, 28px);
-  }
-}
-
-/* ── Mobile ── */
-@media (max-width: 768px) {
-  .topbar {
-    height: 60px;
-  }
-
-  /* Toast moves to TOP on mobile so it never covers the
-     bottom-right reset-btn on faculty dashboard */
-  .toast {
-    bottom: auto;
-    top: 80px;       /* Below sticky topbar */
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%) translateY(-12px);
-    text-align: center;
-    max-width: calc(100vw - 32px);
-    min-width: 240px;
-    border-left: none;
-    border-top: 4px solid #2563eb;
-  }
-
-  .toast.show {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-
-  /* Modal footer vertical on very small screens */
-  .modal-footer {
-    flex-direction: column;
-  }
-  .modal-btn {
-    width: 100%;
-    min-width: unset;
-  }
-}
+/* Toast styling is now handled by toast_utility.js for better isolation and consistency */
 
 /* Large desktop */
 @media (min-width: 1440px) {

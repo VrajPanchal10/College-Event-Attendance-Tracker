@@ -164,7 +164,7 @@ async function loadAttendance() {
   } catch (error) {
 
     removeTableSkeleton();
-    console.error("Attendance Load Error:", error);
+    removeTableSkeleton();
 
   }
 

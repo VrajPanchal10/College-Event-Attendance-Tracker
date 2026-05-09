@@ -13,6 +13,7 @@ const helmet     = require("helmet");
 const rateLimit  = require("express-rate-limit");
 
 const app = express();
+const analyticsRoutes    = require("./routes/analyticsRoutes");
 
 // Middlewares
 app.use(helmet({
@@ -33,11 +34,12 @@ const authLimiter = rateLimit({
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // Routes
-app.use("/api/auth",   authLimiter, authRoutes);
-app.use("/api/events", eventRoutes);
-app.use("/api",        registrationRoutes);
-app.use("/api",        attendanceRoutes);
-app.use("/api",        demoRoutes);
+app.use("/api/auth",      authLimiter, authRoutes);
+app.use("/api/events",    eventRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api",           registrationRoutes);
+app.use("/api",           attendanceRoutes);
+app.use("/api",           demoRoutes);
 
 
 // Test route

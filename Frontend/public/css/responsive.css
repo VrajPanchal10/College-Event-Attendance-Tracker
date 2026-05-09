@@ -298,8 +298,10 @@ button, a, select, input[type="submit"], input[type="button"], input[type="reset
    Shared override for register & profile popovers
    ══════════════════════════════════════════════════ */
 @media (max-width: 768px) {
+  /* Fix #25: selector was too broad [class*="pwd-popover"] was hiding .pwd-popover-wrap which contains the input */
   .pwd-popover,
-  [class*="pwd-popover"] {
+  .pwd-popover-profile,
+  .register-popover {
     position: static !important;
     width: 100% !important;
     left: auto !important;
@@ -311,7 +313,8 @@ button, a, select, input[type="submit"], input[type="button"], input[type="reset
   }
 
   .pwd-popover.show,
-  [class*="pwd-popover"].show {
+  .pwd-popover-profile.show,
+  .register-popover.show {
     display: block !important;
   }
 

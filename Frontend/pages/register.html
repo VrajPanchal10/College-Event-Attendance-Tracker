@@ -16,12 +16,6 @@
 </head>
 
 <body>
-  <div class="top-nav-auth">
-    <a href="login.html" class="back-btn-nav">
-      <span>← Back to Login</span>
-    </a>
-  </div>
-
   <div class="container">
     <h1>Create Account</h1>
 
@@ -96,6 +90,7 @@
       <div class="input-group">
         <label>Role</label>
         <select id="role" required>
+          <option value="" disabled selected>Select Role</option>
           <option value="student">Student</option>
           <option value="faculty">Faculty</option>
         </select>
@@ -111,6 +106,7 @@
     </div>
   </div>
 
+  <script src="../public/js/toast_utility.js"></script>
   <script src="../public/js/auth.js"></script>
 </body>
 
