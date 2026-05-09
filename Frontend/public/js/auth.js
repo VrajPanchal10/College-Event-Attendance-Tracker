@@ -123,6 +123,7 @@ async function login(event) {
       localStorage.setItem("role", data.role);
       localStorage.setItem("name", data.name);
       localStorage.setItem("email", data.email);
+      localStorage.setItem("loginToast", "true"); // Flag for showing toast after redirect
 
       if (data.role === "student") {
         window.location.href = "student-dashboard.html";

@@ -793,8 +793,13 @@ document.addEventListener("DOMContentLoaded", function () {
     if (e.target === this) closeModal();
   });
 
-  const createBtn = document.getElementById("createBtn");
   if (createBtn) createBtn.onclick = createEvent;
+
+  // Login Successful Toast
+  if (localStorage.getItem("loginToast") === "true") {
+    showToast("✔ Login Successful! Welcome back.");
+    localStorage.removeItem("loginToast");
+  }
 });
 
 function showConfirmModal(options) {

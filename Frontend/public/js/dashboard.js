@@ -61,6 +61,12 @@ document.addEventListener("DOMContentLoaded", function () {
       if (e.target === this) closeUnregisterModal();
     });
   }
+
+  // Login Successful Toast
+  if (localStorage.getItem("loginToast") === "true") {
+    showToast("✔ Login Successful! Welcome back.");
+    localStorage.removeItem("loginToast");
+  }
 });
 
 
