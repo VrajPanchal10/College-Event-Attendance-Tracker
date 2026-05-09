@@ -131,7 +131,7 @@ exports.updateEvent = async (req, res) => {
       updates.imageUrl = `/uploads/${req.file.filename}`;
     }
 
-    const event = await Event.findByIdAndUpdate(id, updates, { new: true });
+    const event = await Event.findByIdAndUpdate(id, updates, { returnDocument: 'after' });
 
     if (!event) {
       return res.status(404).json({ message: "Event not found" });

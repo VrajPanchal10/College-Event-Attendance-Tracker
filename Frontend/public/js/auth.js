@@ -1,4 +1,7 @@
-const API_URL = "https://college-event-attendance-tracker.onrender.com/api";
+const BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+  ? "http://localhost:5000"
+  : "https://college-event-attendance-tracker.onrender.com";
+const API_URL = `${BASE_URL}/api`;
 
 // ── Render Cold-Start Wakeup ──
 // Render's free tier spins down after 15m. 

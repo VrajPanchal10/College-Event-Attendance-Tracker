@@ -18,7 +18,8 @@
   font-size: clamp(1.1rem, 2.5vw, 1.35rem);
   font-weight: 700;
   color: #1e293b;
-  margin-bottom: 0; /* Changed to 0 for flex container */
+  margin-bottom: clamp(12px, 2.5vw, 18px); /* Controlled space after the line */
+  line-height: 1.1; /* Tightens the text area */
   letter-spacing: -0.02em;
 }
 
@@ -29,7 +30,7 @@
   height: 3px;
   background: linear-gradient(135deg, #7c3aed, #2563eb);
   border-radius: 2px;
-  margin-top: 8px;
+  margin-top: 4px; /* Reduced from 8px to bring line closer to text */
 }
 
 .section-header-flex {
@@ -38,6 +39,10 @@
   justify-content: space-between;
   margin-bottom: clamp(16px, 3vw, 24px);
   gap: 12px;
+}
+
+.section-header-flex h2 {
+  margin-bottom: 0; /* Header-flex container handles the margin */
 }
 
 .reset-all-btn {

@@ -28,16 +28,25 @@ function handleMarkAllPresent(eventId) {
 // ===============================
 // GLOBAL VARIABLES
 // ===============================
-const API_URL = "https://college-event-attendance-tracker.onrender.com/api";
-const BASE_URL = "https://college-event-attendance-tracker.onrender.com";
+const BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+  ? "http://localhost:5000"
+  : "https://college-event-attendance-tracker.onrender.com";
+const API_URL = `${BASE_URL}/api`;
 
 const token = localStorage.getItem("token");
 const role = localStorage.getItem("role");
 
 if (!token || role !== "faculty") {
-  // Fix #2: Silent redirect — no alert()
   window.location.replace("login.html");
 }
+
+const getImageUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  const baseUrl = BASE_URL.endsWith("/") ? BASE_URL.slice(0, -1) : BASE_URL;
+  const imagePath = path.startsWith("/") ? path : "/" + path;
+  return `${baseUrl}${imagePath}`;
+};
 
 function logout() {
   localStorage.clear();
@@ -322,7 +331,7 @@ function renderFacultyEvents() {
     const safeTitle = (event.title || "").replace(/'/g, "\\'");
 
     const bannerHTML = event.imageUrl
-      ? `<div class="card-banner"><img src="${BASE_URL}${event.imageUrl}" alt="${event.title}" loading="lazy" width="400" height="200"></div>`
+      ? `<div class="card-banner"><img src="${getImageUrl(event.imageUrl)}" alt="${event.title}" loading="lazy"></div>`
       : "";
 
     div.innerHTML = `
@@ -626,7 +635,7 @@ function editEvent(eventId) {
       if (event.date) document.getElementById("date").value = new Date(event.date).toISOString().split("T")[0];
 
       if (event.imageUrl) {
-        document.getElementById("imagePreview").src = `${BASE_URL}${event.imageUrl}`;
+        document.getElementById("imagePreview").src = getImageUrl(event.imageUrl);
         document.getElementById("imagePreview").style.display = "block";
         document.getElementById("uploadPlaceholder").style.display = "none";
         document.getElementById("removeImageBtn").style.display = "inline-flex";

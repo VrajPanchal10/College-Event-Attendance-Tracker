@@ -3,8 +3,10 @@
 // Fix #1: Removed ~460 lines of dead commented-out code
 // Fix #2: Replaced alert() with silent redirect (window.location.replace)
 // ===============================
-const API_URL  = "https://college-event-attendance-tracker.onrender.com/api";
-const BASE_URL = "https://college-event-attendance-tracker.onrender.com";
+const BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+  ? "http://localhost:5000"
+  : "https://college-event-attendance-tracker.onrender.com";
+const API_URL = `${BASE_URL}/api`;
 
 let token = localStorage.getItem("token");
 const role = localStorage.getItem("role");
@@ -13,6 +15,14 @@ const role = localStorage.getItem("role");
 if (!token || role !== "student") {
   window.location.replace("login.html");
 }
+
+const getImageUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  const baseUrl = BASE_URL.endsWith("/") ? BASE_URL.slice(0, -1) : BASE_URL;
+  const imagePath = path.startsWith("/") ? path : "/" + path;
+  return `${baseUrl}${imagePath}`;
+};
 
 // ===============================
 // GLOBAL VARIABLES
@@ -308,7 +318,7 @@ function renderEvents() {
     }
 
     const bannerHTML = event.imageUrl
-      ? `<div class="card-banner"><img src="${BASE_URL}${event.imageUrl}" alt="${sanitize(event.title)}" loading="lazy" width="400" height="200"></div>`
+      ? `<div class="card-banner"><img src="${getImageUrl(event.imageUrl)}" alt="${sanitize(event.title)}" loading="lazy"></div>`
       : "";
 
     // Fix #6: .card-actions class (no inline style)

@@ -1,4 +1,7 @@
-const API_URL = "https://college-event-attendance-tracker.onrender.com/api";
+const BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+  ? "http://localhost:5000"
+  : "https://college-event-attendance-tracker.onrender.com";
+const API_URL = `${BASE_URL}/api`;
 const token   = localStorage.getItem("token");
 const role    = localStorage.getItem("role");
 

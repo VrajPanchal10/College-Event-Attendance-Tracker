@@ -1,11 +1,20 @@
-const API_URL  = "https://college-event-attendance-tracker.onrender.com/api";
-const BASE_URL = "https://college-event-attendance-tracker.onrender.com";
+const BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+  ? "http://localhost:5000"
+  : "https://college-event-attendance-tracker.onrender.com";
+const API_URL = `${BASE_URL}/api`;
 const token    = localStorage.getItem("token");
 
 if (!token) {
-  // Fix #2: Silent redirect — no alert()
   window.location.replace("login.html");
 }
+
+const getImageUrl = (path) => {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  const baseUrl = BASE_URL.endsWith("/") ? BASE_URL.slice(0, -1) : BASE_URL;
+  const imagePath = path.startsWith("/") ? path : "/" + path;
+  return `${baseUrl}${imagePath}`;
+};
 
 const params  = new URLSearchParams(window.location.search);
 const eventId = params.get("id");
@@ -29,16 +38,14 @@ async function loadEventDetails() {
     const event = await res.json();
 
     // ── Banner image ──
-    // Show the banner only when the event actually has an image
+    const banner = document.getElementById("eventBanner");
+    const img    = document.getElementById("bannerImg");
     if (event.imageUrl) {
-      const banner  = document.getElementById("eventBanner");
-      const img     = document.getElementById("bannerImg");
-      img.src       = `${BASE_URL}${event.imageUrl}`;
-      img.alt       = event.title;
+      img.src = getImageUrl(event.imageUrl);
+      img.alt = event.title;
       banner.style.display = "block";
-
-      // If image fails to load (deleted from server etc.) — hide banner cleanly
-      img.onerror = () => { banner.style.display = "none"; };
+    } else {
+      banner.style.display = "none";
     }
 
     // ── Text fields ──

@@ -387,7 +387,7 @@ img {
   width: calc(100% + (clamp(16px, 2.5vw, 24px) * 2));
   margin: calc(clamp(16px, 2.5vw, 24px) * -1) calc(clamp(16px, 2.5vw, 24px) * -1) 16px;
   height: auto;
-  max-height: 250px;
+  /* Removed max-height to allow full proportional display */
   overflow: hidden;
   border-bottom: 1px solid #e2e8f0;
   border-top-left-radius: 16px;
@@ -398,7 +398,13 @@ img {
   width: 100%;
   height: auto;
   display: block;
-  object-fit: cover;
+}
+
+.event-banner img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.4s ease;
 }
 
 /* ══════════════════════════════════════════════════

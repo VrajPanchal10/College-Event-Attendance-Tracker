@@ -15,7 +15,9 @@ const rateLimit  = require("express-rate-limit");
 const app = express();
 
 // Middlewares
-app.use(helmet()); // Sets various security-related HTTP headers
+app.use(helmet({
+  crossOriginResourcePolicy: false, // Allows images to be loaded from other domains (like Netlify)
+}));
 app.use(cors());
 app.use(express.json());
 
