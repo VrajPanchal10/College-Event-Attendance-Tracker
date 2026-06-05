@@ -2,6 +2,11 @@
 
 > A modern, full-stack platform designed to streamline college event management, student registrations, and real-time attendance tracking.
 
+---
+
+## 🚀 Live Demo
+
+🔗 **[View Live Portfolio](https://college-event-attendance-tracker.netlify.app/)**
 
 ---
 
