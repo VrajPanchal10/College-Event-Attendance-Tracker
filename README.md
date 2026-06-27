@@ -6,7 +6,7 @@
 
 ## 🚀 Live Demo
 
-🔗 **[View Live Portfolio](https://college-event-attendance-tracker.netlify.app/)**
+🔗 **[View Live Demo](https://college-event-attendance-tracker.netlify.app/)**
 
 ---
 
