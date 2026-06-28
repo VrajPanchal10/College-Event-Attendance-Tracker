@@ -113,7 +113,7 @@ npm install
 Create a `.env` file in the `Backend/` root and add your configuration:
 ```env
 PORT=5000
-MONGO_URI=mongodb://127.0.0.1:27017/cvm_event_tracker
+MONGO_URI=mongodb://127.0.0.1:27017/your_database_name
 JWT_SECRET=your_super_secret_jwt_key
 JWT_EXPIRE=1d
 ```
